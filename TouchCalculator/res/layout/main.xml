@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/appvertical1"
+    >
+	
+	<TextView  
+	    android:id="@+id/txtStack"
+	    android:layout_width="fill_parent" 
+	    android:layout_height="wrap_content" 
+	   	android:textSize="15sp"
+	    android:gravity="right"
+	    android:background="@drawable/stackview1"
+	    android:layout_marginTop = "15sp"
+	    android:layout_marginLeft = "5sp"
+	    android:layout_marginRight = "5sp"
+    	android:textColor="@color/darkgrey"/>
+   
+
+    <TextView  
+    	android:id="@+id/txtInput"
+    	android:layout_width="fill_parent" 
+    	android:layout_height="wrap_content" 
+    	android:textSize="35sp"
+    	android:gravity="right"
+    	android:background="@drawable/inputview1"
+    	android:textColor="@color/black"
+    	android:layout_marginLeft = "5sp"
+   		android:layout_marginRight = "5sp"/>
+
+
+    <TextView  
+    	android:id="@+id/txtMemory"
+    	android:layout_width="fill_parent" 
+    	android:layout_height="wrap_content" 
+    	android:textSize="15sp"
+    	android:textColor="@color/lightyellow"
+    	android:gravity="left"
+        android:layout_marginLeft = "5sp"
+   		android:layout_marginRight = "5sp"/>
+   		
+<GridView xmlns:android="http://schemas.android.com/apk/res/android" 
+    android:id="@+id/grdButtons"
+    android:layout_width="fill_parent" 
+    android:layout_height="fill_parent"
+    android:stretchMode="columnWidth"
+    android:gravity="center" android:columnWidth="90dp" android:numColumns="5" android:verticalSpacing="10dp" android:horizontalSpacing="10dp"/>
+  
+    
+
+</LinearLayout>
