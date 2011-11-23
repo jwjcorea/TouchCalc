@@ -52,7 +52,43 @@ public class AddFilterActivity extends Activity {
 				@Override
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
-					Log.i("jdebug", "btnDirect");					
+					hide();
+					
+					MyAddUserDialog dlg = new MyAddUserDialog(AddFilterActivity.this);
+					dlg.show();
+				}
+			});
+		}		
+	}
+	
+	public class MyAddUserDialog extends Dialog
+	{
+
+		public MyAddUserDialog(Context context) {
+			super(context);
+			// TODO Auto-generated constructor stub
+			
+			setTitle("사용자 추가");
+			setContentView(R.layout.dialog_direct_add_user);
+			
+			Button btnSave = (Button) findViewById(R.id.btnSave);
+			Button btnCancel = (Button) findViewById(R.id.btnCancel);
+			
+			btnSave.setOnClickListener(new View.OnClickListener() {
+				
+				@Override
+				public void onClick(View arg0) {
+					// TODO Auto-generated method stub
+					
+				}
+			});
+			
+			btnCancel.setOnClickListener(new View.OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					hide();
 				}
 			});
 		}		
