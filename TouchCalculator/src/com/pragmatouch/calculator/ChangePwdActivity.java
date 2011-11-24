@@ -9,6 +9,10 @@ import java.io.IOException;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -33,6 +37,28 @@ public class ChangePwdActivity extends Activity {
 		editConfirmPwd = (EditText) findViewById(R.id.editConfirmNewPwd);
 		btnYes = (Button) findViewById(R.id.btnYes);
 		btnCancel = (Button) findViewById(R.id.btnCancel);
+				
+		editCurPwd.addTextChangedListener(new TextWatcher() {
+			
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+				// TODO Auto-generated method stub
+				// only needed the num				
+			}
+			
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void afterTextChanged(Editable s) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
 		
 		btnYes.setOnClickListener(new View.OnClickListener() {
 			
@@ -115,7 +141,7 @@ public class ChangePwdActivity extends Activity {
 								editNewPwd.setText("");
 								editConfirmPwd.setText("");
 								
-								SecretManager.external_selectTab(0);
+								finish();
 							}
 						}
 						else
@@ -146,7 +172,7 @@ public class ChangePwdActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				SecretManager.external_selectTab(0);
+				finish();
 			}
 		});
 	}

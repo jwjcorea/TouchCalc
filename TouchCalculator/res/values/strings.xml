@@ -12,6 +12,15 @@
     <string name="pwd_info">입력하신 비밀번호는 암호화된 정보이므로 시스템에서 확인할 수 없습니다. 그러므로 암호 입력시 신중을 기해주시고 꼭 기억 해주세요.</string>
     <string name="yes">확인</string>
     <string name="cancel">취소</string>
-    <string name="incorrectCurPwd">현재 패스워드가 틀립니다. 다시 입력해 주십시오.</string>        
+    <string name="incorrectCurPwd">현재 패스워드가 틀립니다. 다시 입력해 주십시오.</string>
+    
+            
+    <string-array name="menu">
+    <item>수정</item>
+    <item>삭제</item>
+    <item>무음설정</item>
+    <item>수신거부</item>
+    <item>복원</item>
+    </string-array>
     
 </resources>
