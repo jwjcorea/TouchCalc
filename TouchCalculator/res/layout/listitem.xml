@@ -6,10 +6,11 @@
             <TextView android:layout_marginLeft="10dp" android:textAppearance="?android:attr/textAppearanceMedium" android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="@+id/textName" android:text="홍길동" android:textSize="25dp"></TextView>
             <TextView android:layout_marginLeft="10dp" android:textAppearance="?android:attr/textAppearanceMedium" android:layout_height="wrap_content" android:layout_width="match_parent" android:id="@+id/textTel" android:text="010-1004-1004" android:textSize="20dp" android:textColor="@color/darkgrey"></TextView>
         </LinearLayout>
-        <LinearLayout android:id="@+id/linearLayout3" android:layout_width="140dp" android:gravity="right|center_vertical" android:layout_height="70dp">
-            <Button android:id="@+id/btnMute" android:layout_height="40dp" android:layout_width="40dp" android:focusable="false"></Button>
-            <Button android:id="@+id/btnReceive" android:layout_height="40dp" android:layout_width="40dp" android:focusable="false"></Button>
-            <Button android:id="@+id/btnRestore" android:layout_height="40dp" android:layout_marginRight="10dp" android:layout_width="40dp" android:focusable="false"></Button>
+        <LinearLayout android:id="@+id/linearLayout3" android:gravity="right|center_vertical" android:layout_height="70dp" android:layout_width="wrap_content">
+            <ImageView android:src="@drawable/icon" android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/imageView1"></ImageView>
+            <ImageView android:src="@drawable/icon" android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/imageView2"></ImageView>
+            <ImageView android:src="@drawable/icon" android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/imageView3" android:layout_marginRight="10dp"></ImageView>
+                   
         </LinearLayout>
     </LinearLayout>
 

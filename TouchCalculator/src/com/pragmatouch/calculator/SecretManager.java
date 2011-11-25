@@ -4,9 +4,14 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
+import android.provider.ContactsContract.Contacts;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -22,11 +27,18 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.provider.ContactsContract.CommonDataKinds.Phone;
 
 public class SecretManager extends Activity {
 	ListView userList;
 	ArrayList<MyItem> arryItem;
 	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+	}
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// TODO Auto-generated method stub
@@ -76,44 +88,10 @@ public class SecretManager extends Activity {
 		setContentView(R.layout.secretmanager);
 		
 		arryItem = new ArrayList<MyItem>();
-		MyItem mi;
-		mi = new MyItem("장준혁", "010-2937-1864", 0, 0, 0);
-		arryItem.add(mi);
-		mi = new MyItem("임형주", "010-0000-1111", 0, 0, 0);
-		arryItem.add(mi);
-		mi = new MyItem("박승철", "010-0000-2222", 0, 0, 0);
-		arryItem.add(mi);
-		mi = new MyItem("노용경", "010-0000-3333", 0, 0, 0);
-		arryItem.add(mi);
-		mi = new MyItem("장준혁", "010-2937-1864", 0, 0, 0);
-		arryItem.add(mi);
-		mi = new MyItem("임형주", "010-0000-1111", 0, 0, 0);
-		arryItem.add(mi);
-		mi = new MyItem("박승철", "010-0000-2222", 0, 0, 0);
-		arryItem.add(mi);
-		mi = new MyItem("노용경", "010-0000-3333", 0, 0, 0);
-		arryItem.add(mi);
-		mi = new MyItem("장준혁", "010-2937-1864", 0, 0, 0);
-		arryItem.add(mi);
-		mi = new MyItem("임형주", "010-0000-1111", 0, 0, 0);
-		arryItem.add(mi);
-		mi = new MyItem("박승철", "010-0000-2222", 0, 0, 0);
-		arryItem.add(mi);
-		mi = new MyItem("노용경", "010-0000-3333", 0, 0, 0);
-		arryItem.add(mi);
-		mi = new MyItem("장준혁", "010-2937-1864", 0, 0, 0);
-		arryItem.add(mi);
-		mi = new MyItem("임형주", "010-0000-1111", 0, 0, 0);
-		arryItem.add(mi);
-		mi = new MyItem("박승철", "010-0000-2222", 0, 0, 0);
-		arryItem.add(mi);
-		mi = new MyItem("노용경", "010-0000-3333", 0, 0, 0);
-		arryItem.add(mi);
-		
 		MyListAdapter MyAdapter = new MyListAdapter(this, R.layout.listitem, arryItem);
 		
-		userList = (ListView) findViewById(R.id.userList);
-		userList.setAdapter(MyAdapter);	
+		userList = (ListView) findViewById(R.id.userList);		
+		userList.setAdapter(MyAdapter);
 		
 		userList.setOnItemClickListener(mItemClickListener);
 		registerForContextMenu(userList);
@@ -143,18 +121,23 @@ public class SecretManager extends Activity {
 		
 		Toast.makeText(SecretManager.this, info.position + "번째" + menuItemName + "기능 시작", 0).show();
 		
+		if(menuItemIdx == 0)
+			ModifyUserInfo();
+		
 		return true;
 	}
 
 	void AddUser()
 	{
-		MyDialog dlg = new MyDialog(this);
+		AddUserDialog dlg = new AddUserDialog(this);		
 		dlg.show();
 	}
 	
-	public class MyDialog extends Dialog
+	public class AddUserDialog extends Dialog
 	{
-		public MyDialog(Context context) {
+		UserInfo[] userInfo;
+		
+		public AddUserDialog(Context context) {
 			super(context);
 			
 			setTitle("사용자 추가");
@@ -167,7 +150,76 @@ public class SecretManager extends Activity {
 				@Override
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
-					Log.i("jdebug", "btnTel");
+					
+				/*	ContentValues values = new ContentValues();
+					values.put(Phone.RAW_CONTACT_ID, "장준혁");
+					values.put(Phone.NUMBER, "010-2937-1864");
+					values.put(Phone.TYPE, Phone.TYPE_MOBILE);
+					Uri uri = getContentResolver().insert(Phone.CONTENT_URI, values);*/
+					Cursor cursor = getTelList();
+					
+					int nCnt = cursor.getCount();
+					if(nCnt == 0)
+					{
+						hide();					
+						return;
+					}
+					else
+					{					
+						Log.d("jdebug", "end = " + nCnt);
+
+						int i = 0;
+						userInfo = new UserInfo[nCnt];
+						for(i=0; i<nCnt; ++i)
+						{
+							userInfo[i] = new UserInfo();
+							userInfo[i].number = new ArrayList<String>();
+						}
+						
+						if(cursor.moveToFirst())
+						{
+							int idIndex = cursor.getColumnIndex("_id");
+							
+							i = 0;							
+							do
+							{	
+								int id = cursor.getInt(idIndex);
+								userInfo[i].strName = cursor.getString(1);
+								
+								String phoneChk = cursor.getString(2);
+								if (phoneChk.equals("1")) {
+									Cursor phones = getContentResolver()
+											.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+													null,
+													ContactsContract.CommonDataKinds.Phone.CONTACT_ID
+															+ " = " + id, null, null);
+									
+									while (phones.moveToNext()) {
+										userInfo[i].number.add(phones.getString(phones
+												.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
+									}
+								}
+								
+								++i;
+								
+							}while(cursor.moveToNext() || i > nCnt);
+						}
+						
+						// 사용자 이름과 폰 번호를 다 얻었다. 채워라
+						for(i=0; i<nCnt; ++i)
+						{
+							int nCntNum = userInfo[i].number.size();
+							for(int j=0; j<nCntNum; ++j)
+							{
+								Log.i("jdebug", "name = " + userInfo[i].strName + " , number = " + userInfo[i].number.get(j));
+							}
+						}
+						
+						//SecretManager.userInfo = userInfo;
+						
+						
+						hide();
+					}
 				}
 			});
 			
@@ -179,17 +231,56 @@ public class SecretManager extends Activity {
 					// TODO Auto-generated method stub
 					hide();
 					
-					MyAddUserDialog dlg = new MyAddUserDialog(SecretManager.this);
+					ManuallyAddUserDialog dlg = new ManuallyAddUserDialog(SecretManager.this);
 					dlg.show();
 				}
 			});
 		}		
 	}
 	
-	public class MyAddUserDialog extends Dialog
+	void ModifyUserInfo()
+	{
+		ModifyUserDialog dlg = new ModifyUserDialog(this);
+		dlg.show();
+	}
+	
+	public class ManuallyAddUserDialog extends Dialog
 	{
 
-		public MyAddUserDialog(Context context) {
+		public ManuallyAddUserDialog(Context context) {
+			super(context);
+			// TODO Auto-generated constructor stub
+			
+			setTitle("사용자 추가");
+			setContentView(R.layout.dialog_direct_add_user);
+			
+			Button btnSave = (Button) findViewById(R.id.btnSave);
+			Button btnCancel = (Button) findViewById(R.id.btnCancel);
+			
+			btnSave.setOnClickListener(new View.OnClickListener() {
+				
+				@Override
+				public void onClick(View arg0) {
+					// TODO Auto-generated method stub
+					
+				}
+			});
+			
+			btnCancel.setOnClickListener(new View.OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					hide();
+				}
+			});
+		}		
+	}
+	
+	public class ModifyUserDialog extends Dialog
+	{
+
+		public ModifyUserDialog(Context context) {
 			super(context);
 			// TODO Auto-generated constructor stub
 			
@@ -294,40 +385,32 @@ public class SecretManager extends Activity {
 			txtName.setText(arrySrc.get(position).strName);
 			txtTel.setText(arrySrc.get(position).strTel);
 			
-			// buttons
-			Button btnMute = (Button) convertView.findViewById(R.id.btnMute);
-			Button btnReceive = (Button) convertView.findViewById(R.id.btnReceive);
-			Button btnRestore = (Button) convertView.findViewById(R.id.btnRestore);
-			
-			btnMute.setOnClickListener(new View.OnClickListener() {
-				
-				@Override
-				public void onClick(View v) {
-					// TODO Auto-generated method stub
-					Toast.makeText(SecretManager.this, "무음설정 버튼 눌림", 0).show();
-				}
-			});
-
-			btnReceive.setOnClickListener(new View.OnClickListener() {
-
-				@Override
-				public void onClick(View v) {
-					// TODO Auto-generated method stub
-					Toast.makeText(SecretManager.this, "수신거부 버튼 눌림", 0).show();
-				}
-			});
-
-			btnRestore.setOnClickListener(new View.OnClickListener() {
-
-				@Override
-				public void onClick(View v) {
-					// TODO Auto-generated method stub
-					Toast.makeText(SecretManager.this, "복원 버튼 눌림", 0).show();
-				}
-			});
-			
 			return convertView;
 		}
+	}
+	
+	private Cursor getTelList()
+	{
+		// Tel address
+		Uri people = Contacts.CONTENT_URI;
 		
+		// 검색할 컬럼 정하기
+		String[] projection = new String[]{Contacts._ID, Contacts.DISPLAY_NAME, Contacts.HAS_PHONE_NUMBER};
+		
+		// 쿼리 날려서 커서 얻기
+		String[] selectionArgs = null;
+		String sortOrder = ContactsContract.Contacts.DISPLAY_NAME + " COLLATE LOCALIZED ASC";		
+		
+		return managedQuery(people, projection, null, selectionArgs, sortOrder);
+	}
+	
+	class UserInfo
+	{
+		String strName;
+		ArrayList<String> number;
+		
+		public UserInfo() {
+			// TODO Auto-generated constructor stub			
+		}
 	}
 }
