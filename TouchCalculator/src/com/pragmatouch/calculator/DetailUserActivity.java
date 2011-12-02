@@ -7,17 +7,37 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class DetailUserActivity extends Activity {
 
+	Button btnTel = null;
+	Button btnMsg = null;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		
 		setContentView(R.layout.detailuser);
+				
+		// get the control
+		btnTel = (Button) findViewById(R.id.btnTel);
+		btnMsg = (Button) findViewById(R.id.btnMessage);
+		TextView tvName = (TextView) findViewById(R.id.textName);
+		TextView tvTel = (TextView) findViewById(R.id.textTel);
+				
+		// set the user info
+		// 1. get the info
+		Intent i = getIntent();
+		String strName = i.getStringExtra("name");
+		String strTel = i.getStringExtra("tel");
 		
-		Button btnTel = (Button) findViewById(R.id.btnTel);
+		// 2. set the info
+		tvName.setText(strName);
+		tvTel.setText(strTel);
+		
+		// listener
 		btnTel.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
@@ -29,7 +49,6 @@ public class DetailUserActivity extends Activity {
 			}
 		});
 		
-		Button btnMsg = (Button) findViewById(R.id.btnMessage);
 		btnMsg.setOnClickListener(new View.OnClickListener() {
 			
 			@Override

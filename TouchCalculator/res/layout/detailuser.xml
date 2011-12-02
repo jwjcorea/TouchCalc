@@ -6,14 +6,14 @@
 		android:layout_width="match_parent" android:gravity="center_vertical|center_horizontal" android:layout_marginTop="5dp" android:layout_height="60dp">
 		<LinearLayout android:orientation="vertical" android:id="@+id/linearLayout1"
 			android:layout_height="wrap_content" android:layout_marginLeft="10dp" android:layout_width="170dp">
-			<TextView android:id="@+id/textView1" android:text="Jang Jun Hyeok"
+			<TextView android:text="Jang Jun Hyeok"
 				android:layout_width="wrap_content" android:layout_height="wrap_content"
 				android:textAppearance="?android:attr/textAppearanceMedium"
-				android:textSize="20dp"></TextView>
-			<TextView android:id="@+id/textView2" android:text="010-2937-1864"
+				android:textSize="20dp" android:id="@+id/textName"></TextView>
+			<TextView android:text="010-2937-1864"
 				android:layout_width="wrap_content" android:layout_height="wrap_content"
 				android:textAppearance="?android:attr/textAppearanceMedium"
-				android:textSize="23dp"></TextView>
+				android:textSize="23dp" android:id="@+id/textTel"></TextView>
 		</LinearLayout>
 		<LinearLayout android:id="@+id/linearLayout3"
 			android:gravity="right"

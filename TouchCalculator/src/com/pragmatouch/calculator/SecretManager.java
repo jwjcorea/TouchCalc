@@ -34,7 +34,7 @@ import android.provider.ContactsContract.CommonDataKinds.Phone;
 
 public class SecretManager extends Activity {
 	ListView userList;
-	ArrayList<MyItem> arryItem;
+	ArrayList<MyItem> m_arryItem;
 	AddUserDialog dlg;
 	UserInfo[] userInfo;
 
@@ -213,8 +213,10 @@ public class SecretManager extends Activity {
 			arryItem.add(item);
 		}
 		
-		Log.i("jdebug", "db str = " + str);
 		db.close();
+		
+		// ¿˙¿Â
+		m_arryItem  = arryItem;		
 		
 		MyListAdapter MyAdapter = new MyListAdapter(SecretManager.this, R.layout.listitem, arryItem);
 		userList = (ListView) findViewById(R.id.userList);
@@ -399,9 +401,13 @@ public class SecretManager extends Activity {
 			// TODO Auto-generated method stub
 			String mes;
 			mes = "Select Item = " + position;
-			Toast.makeText(SecretManager.this, mes, 0).show();
+			Toast.makeText(SecretManager.this, mes, 0).show();			
+			
+			MyItem item = (MyItem)m_arryItem.get(position);			
 			
 			Intent i = new Intent(SecretManager.this, DetailUserActivity.class);
+			i.putExtra("name", item.strName);
+			i.putExtra("tel", item.strTel);
 			startActivity(i);
 		}
 	};
@@ -413,7 +419,7 @@ public class SecretManager extends Activity {
 			strTel = _strTel;
 			bMute = _bMute;
 			bReceive = _bReceive;
-			bReceive = _bRestore;
+			bRestore = _bRestore;
 		}
 
 		String strName;
