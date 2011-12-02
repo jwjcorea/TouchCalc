@@ -16,6 +16,7 @@
 		<activity android:name=".AddFilterActivity"></activity>
 		<activity android:name=".ChangePwdActivity"></activity>
 		<activity android:name=".HelpActivity"></activity>
+		<activity android:name=".DetailUserActivity"></activity>
 
 	</application>
 	<uses-sdk android:minSdkVersion="8" />

@@ -9,6 +9,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -89,14 +91,9 @@ public class SecretManager extends Activity {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.secretmanager);
-
-		arryItem = new ArrayList<MyItem>();
-		MyListAdapter MyAdapter = new MyListAdapter(this, R.layout.listitem,
-				arryItem);
-
-		userList = (ListView) findViewById(R.id.userList);
-		userList.setAdapter(MyAdapter);
-
+		
+		RefreshList();		
+		
 		userList.setOnItemClickListener(mItemClickListener);
 		registerForContextMenu(userList);
 	}
@@ -140,27 +137,88 @@ public class SecretManager extends Activity {
 			@Override
 			public void onDismiss(DialogInterface dialog) {
 				// TODO Auto-generated method stub
+				
 				AddUserDialog tmpDlg = ((AddUserDialog) dialog);
+				
 				int nCnt = tmpDlg.userInfo.length;
+				
 				Log.i("jdebug", "onDismiss" + nCnt);
-				
-				ArrayList<MyItem> tmpArryItem = new ArrayList<MyItem>();
-				
-				for (int i = 0; i < nCnt; ++i) {
-					int nCntNum = tmpDlg.userInfo[i].number.size();					
-					for (int j = 0; j < nCntNum; ++j) {
-						{
-							MyItem item = new MyItem(tmpDlg.userInfo[i].strName, tmpDlg.userInfo[i].number.get(j), 0, 0, 0);
-							tmpArryItem.add(item);
-						}
-					}
-				}
-				
-				MyListAdapter MyAdapter = new MyListAdapter(SecretManager.this, R.layout.listitem, tmpArryItem);
-				userList = (ListView) findViewById(R.id.userList);
-				userList.setAdapter(MyAdapter);
+								
+				DropTable();				
+				InsertItemToDB(nCnt, tmpDlg);
+				RefreshList();
 			}
 		});
+	}
+	
+	void InsertItemToDB(int nCnt, AddUserDialog tmpDlg)
+	{
+		SQLiteOpenHelper dbHelper = new DBManager(SecretManager.this, "userList.db", null, 1);		
+		SQLiteDatabase db = dbHelper.getWritableDatabase();
+		
+		for (int i = 0; i < nCnt; ++i) {
+			int nCntNum = tmpDlg.userInfo[i].number.size();					
+			for (int j = 0; j < nCntNum; ++j) {
+				{
+					//MyItem item = new MyItem(tmpDlg.userInfo[i].strName, tmpDlg.userInfo[i].number.get(j), 0, 0, 0);
+					//tmpArryItem.add(item);
+					
+					ContentValues cv = new ContentValues();
+					cv.put("name", tmpDlg.userInfo[i].strName);
+					cv.put("tel", tmpDlg.userInfo[i].number.get(j));
+					cv.put("mute", 0);
+					cv.put("receive", 0);
+					cv.put("restore", 0);
+					db.insert("userList", null, cv);
+				}
+			}
+		}
+		
+		db.close();
+	}
+	
+	void DropTable()
+	{
+		SQLiteOpenHelper dbHelper = new DBManager(SecretManager.this, "userList.db", null, 1);		
+		SQLiteDatabase db = dbHelper.getWritableDatabase();
+		
+		// drop the table
+		String sql = "DROP TABLE IF EXISTS USERLIST";
+		db.execSQL(sql);
+		dbHelper.onCreate(db);
+		
+		db.close();
+	}
+	
+	void RefreshList()
+	{
+		ArrayList<MyItem> arryItem = new ArrayList<MyItem>();		
+		SQLiteOpenHelper dbHelper = new DBManager(SecretManager.this, "userList.db", null, 1);		
+		SQLiteDatabase db = dbHelper.getWritableDatabase();
+		
+		String sql = "select * from userList;";		
+		String[] columns = {"name", "tel", "mute", "receive", "restore"};
+		Cursor result = db.query("userList", columns, null, null, null, null, null);
+		
+		String str = "";
+		while(result.moveToNext())
+		{
+			String name = result.getString(0);
+			String tel = result.getString(1);
+			int bMute = result.getInt(2);
+			int bReceive = result.getInt(3);
+			int bRestore = result.getInt(4);
+			
+			MyItem item = new MyItem(name, tel, bMute, bReceive, bRestore);
+			arryItem.add(item);
+		}
+		
+		Log.i("jdebug", "db str = " + str);
+		db.close();
+		
+		MyListAdapter MyAdapter = new MyListAdapter(SecretManager.this, R.layout.listitem, arryItem);
+		userList = (ListView) findViewById(R.id.userList);
+		userList.setAdapter(MyAdapter);
 	}
 
 	public class AddUserDialog extends Dialog {
@@ -342,7 +400,9 @@ public class SecretManager extends Activity {
 			String mes;
 			mes = "Select Item = " + position;
 			Toast.makeText(SecretManager.this, mes, 0).show();
-
+			
+			Intent i = new Intent(SecretManager.this, DetailUserActivity.class);
+			startActivity(i);
 		}
 	};
 
