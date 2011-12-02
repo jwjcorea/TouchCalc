@@ -50,9 +50,9 @@ public final class R {
         public static final int btnYes=0x7f070022;
         public static final int editConfirmNewPwd=0x7f070021;
         public static final int editCurPwd=0x7f07001c;
+        public static final int editName=0x7f07000e;
         public static final int editNewPwd=0x7f07001e;
-        public static final int editText1=0x7f07000e;
-        public static final int editText2=0x7f070010;
+        public static final int editTel=0x7f070010;
         public static final int grdButtons=0x7f070019;
         public static final int imageView1=0x7f070013;
         public static final int imageView2=0x7f070014;

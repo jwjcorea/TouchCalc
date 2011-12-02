@@ -3,27 +3,26 @@
 	android:orientation="vertical" android:layout_width="match_parent"
 	android:layout_height="match_parent" android:background="@color/darkgrey">
 	<LinearLayout android:id="@+id/linearLayout1"
-		android:layout_height="wrap_content" android:layout_width="300dp">
+		android:layout_height="wrap_content" android:layout_marginTop="10dp" android:layout_width="match_parent">
 		<TextView android:textAppearance="?android:attr/textAppearanceMedium"
 			android:layout_height="wrap_content" android:id="@+id/textView1"
 			android:text="이름" android:layout_marginLeft="20dp" android:layout_width="100dp"></TextView>
-		<EditText android:layout_weight="1" android:id="@+id/editText1"
-			android:layout_height="wrap_content" android:layout_width="wrap_content"
-			android:layout_marginRight="20dp">
+		<EditText android:layout_weight="1" android:layout_height="wrap_content" android:layout_width="wrap_content"
+			android:layout_marginRight="20dp" android:id="@+id/editName">
 			<requestFocus></requestFocus>
 		</EditText>
 	</LinearLayout>
 	<LinearLayout android:id="@+id/linearLayout2"
-		android:layout_height="wrap_content" android:layout_width="300dp">
+		android:layout_height="wrap_content" android:layout_width="match_parent">
 		<TextView android:textAppearance="?android:attr/textAppearanceMedium"
 			android:layout_height="wrap_content" android:id="@+id/textView2"
 			android:text="전화번호" android:layout_marginLeft="20dp" android:layout_width="100dp"></TextView>
-		<EditText android:id="@+id/editText2" android:layout_height="wrap_content"
+		<EditText android:layout_height="wrap_content"
 			android:layout_width="wrap_content" android:layout_weight="0.49"
-			android:layout_marginRight="20dp"></EditText>
+			android:layout_marginRight="20dp" android:id="@+id/editTel"></EditText>
 	</LinearLayout>
 	<LinearLayout android:id="@+id/linearLayout3"
-		android:layout_height="wrap_content" android:gravity="center" android:layout_width="300dp">
+		android:layout_height="wrap_content" android:gravity="center" android:layout_width="match_parent" android:layout_marginTop="10dp">
 		<Button android:text="저장" android:id="@+id/btnSave"
 			android:layout_height="wrap_content" android:layout_width="100dp"></Button>
 		<Button android:text="취소" android:id="@+id/btnCancel"

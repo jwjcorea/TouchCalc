@@ -27,6 +27,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -319,6 +320,21 @@ public class SecretManager extends Activity {
 					ManuallyAddUserDialog dlg = new ManuallyAddUserDialog(
 							SecretManager.this);
 					dlg.show();
+					dlg.setOnDismissListener(new DialogInterface.OnDismissListener() {
+						
+						@Override
+						public void onDismiss(DialogInterface dialog) {
+							// TODO Auto-generated method stub
+							ManuallyAddUserDialog tmpDlg = ((ManuallyAddUserDialog) dialog);
+							
+							// get the value
+							String strName = tmpDlg.m_strName;
+							String strTel = tmpDlg.m_strTel;
+							
+							// Insert info to DB
+							//InsertToDB(strName, strTel);
+						}
+					});
 				}
 			});
 		}
@@ -330,7 +346,11 @@ public class SecretManager extends Activity {
 	}
 
 	public class ManuallyAddUserDialog extends Dialog {
-
+		String m_strName;
+		String m_strTel;
+		EditText m_editName;
+		EditText m_editTel;		
+		
 		public ManuallyAddUserDialog(Context context) {
 			super(context);
 			// TODO Auto-generated constructor stub
@@ -340,13 +360,17 @@ public class SecretManager extends Activity {
 
 			Button btnSave = (Button) findViewById(R.id.btnSave);
 			Button btnCancel = (Button) findViewById(R.id.btnCancel);
+			m_editName = (EditText) findViewById(R.id.editName);
+			m_editTel = (EditText) findViewById(R.id.editTel);
 
 			btnSave.setOnClickListener(new View.OnClickListener() {
 
 				@Override
 				public void onClick(View arg0) {
 					// TODO Auto-generated method stub
-
+					m_strName = m_editName.getText().toString();
+					m_strTel = m_editTel.getText().toString();
+					dismiss();
 				}
 			});
 
@@ -354,8 +378,8 @@ public class SecretManager extends Activity {
 
 				@Override
 				public void onClick(View v) {
-					// TODO Auto-generated method stub
-					hide();
+					// TODO Auto-generated method stub					
+					dismiss();
 				}
 			});
 		}
