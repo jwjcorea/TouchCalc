@@ -56,7 +56,6 @@ public class SecretManager extends Activity {
 		item.setAlphabeticShortcut('a');
 		menu.add(0, 2, 0, "비밀번호 변경").setIcon(R.drawable.icon);
 		menu.add(0, 3, 0, "도움말").setIcon(R.drawable.icon);
-
 		return true;
 	}
 
@@ -202,6 +201,7 @@ public class SecretManager extends Activity {
 		Cursor result = db.query("userList", columns, null, null, null, null, null);
 		
 		String str = "";
+		int i=0;
 		while(result.moveToNext())
 		{
 			String name = result.getString(0);
@@ -212,16 +212,28 @@ public class SecretManager extends Activity {
 			
 			MyItem item = new MyItem(name, tel, bMute, bReceive, bRestore);
 			arryItem.add(item);
+			++i;
 		}
 		
 		db.close();
 		
-		// 저장
-		m_arryItem  = arryItem;		
-		
-		MyListAdapter MyAdapter = new MyListAdapter(SecretManager.this, R.layout.listitem, arryItem);
+		TextView tvEmpty = (TextView) findViewById(R.id.textEmpty);
 		userList = (ListView) findViewById(R.id.userList);
-		userList.setAdapter(MyAdapter);
+		if(i == 0)
+		{			
+			tvEmpty.setVisibility(View.VISIBLE);
+			userList.setVisibility(View.GONE);
+		}
+		else
+		{		
+			// 저장
+			m_arryItem  = arryItem;		
+			
+			MyListAdapter MyAdapter = new MyListAdapter(SecretManager.this, R.layout.listitem, arryItem);
+			tvEmpty.setVisibility(View.GONE);
+			userList.setVisibility(View.VISIBLE);
+			userList.setAdapter(MyAdapter);
+		}
 	}
 
 	public class AddUserDialog extends Dialog {

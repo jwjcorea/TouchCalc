@@ -62,6 +62,7 @@ public final class R {
         public static final int linearLayout3=0x7f070004;
         public static final int linearLayout4=0x7f070007;
         public static final int scrollView1=0x7f07001a;
+        public static final int textEmpty=0x7f070024;
         public static final int textName=0x7f070002;
         public static final int textTel=0x7f070003;
         public static final int textView1=0x7f07000d;
