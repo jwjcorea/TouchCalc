@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/mnuModify"
+    android:title = "수정"
+    android:checkable="false"
+    android:checked="false"
+    />
+    
+    <item android:id="@+id/mnuDelete"
+    android:title = "삭제"
+    android:checkable="false"
+    android:checked="false"
+    />
+    
+    <item android:id="@+id/mnuMute"
+    android:title = "무음"
+    android:checkable="true"
+    android:checked="false"
+    />
+    
+    <item android:id="@+id/mnuNoReceive"
+    android:title = "수신거부"
+    android:checkable="true"
+    android:checked="false"
+    />
+      
+</menu>

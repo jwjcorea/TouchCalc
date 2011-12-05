@@ -20,6 +20,7 @@ import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +29,7 @@ import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,6 +40,7 @@ public class SecretManager extends Activity {
 	ArrayList<MyItem> m_arryItem;
 	AddUserDialog dlg;
 	UserInfo[] userInfo;
+	int m_nPosLongClick;
 
 	@Override
 	protected void onResume() {
@@ -51,11 +54,10 @@ public class SecretManager extends Activity {
 		// TODO Auto-generated method stub
 		super.onCreateOptionsMenu(menu);
 
-		MenuItem item = menu.add(0, 1, 0, "사용자 추가");
-		item.setIcon(R.drawable.icon);
-		item.setAlphabeticShortcut('a');
-		menu.add(0, 2, 0, "비밀번호 변경").setIcon(R.drawable.icon);
-		menu.add(0, 3, 0, "도움말").setIcon(R.drawable.icon);
+		MenuItem item = menu.add(0, 1, 0, "사용자 추가").setIcon(R.drawable.ic_input_add);		
+		//item.setAlphabeticShortcut('a');
+		menu.add(0, 2, 0, "비밀번호 변경").setIcon(R.drawable.ic_lock_lock);
+		menu.add(0, 3, 0, "도움말").setIcon(R.drawable.ic_dialog_alert_holo_light);
 		return true;
 	}
 
@@ -95,6 +97,7 @@ public class SecretManager extends Activity {
 		RefreshList();		
 		
 		userList.setOnItemClickListener(mItemClickListener);
+		userList.setOnItemLongClickListener(mItemLongClickListener);
 		registerForContextMenu(userList);
 	}
 
@@ -104,10 +107,36 @@ public class SecretManager extends Activity {
 		// TODO Auto-generated method stub
 		if (v.getId() == R.id.userList) {
 			AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
-			menu.setHeaderTitle("장준혁");
-			String[] menuItems = getResources().getStringArray(R.array.menu);
+			
+			menu.setHeaderTitle("사용자 설정");			
+			String[] menuItems = getResources().getStringArray(R.array.menu);			
 			for (int i = 0; i < menuItems.length; ++i)
-				menu.add(Menu.NONE, i, i, menuItems[i]);
+			{
+				if(i < 2)
+					menu.add(Menu.NONE, i, i, menuItems[i]);
+				else if(i ==2)
+				{
+					MyItem item = (MyItem)m_arryItem.get(m_nPosLongClick);
+					boolean bMute = false;				
+					if(item.bMute == 0)
+						bMute = false;
+					else
+						bMute = true;
+					
+					menu.add(Menu.NONE, i, i, menuItems[i]).setCheckable(true).setChecked(bMute);
+				}
+				else if(i == 3)
+				{
+					MyItem item = (MyItem)m_arryItem.get(m_nPosLongClick);
+					boolean bNoReceive = false;	
+					if(item.bNoReceive == 0)
+						bNoReceive = false;
+					else
+						bNoReceive = true;
+					
+					menu.add(Menu.NONE, i, i, menuItems[i]).setCheckable(true).setChecked(bNoReceive);
+				}									
+			}
 		}
 	}
 
@@ -115,15 +144,76 @@ public class SecretManager extends Activity {
 	public boolean onContextItemSelected(MenuItem item) {
 		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item
 				.getMenuInfo();
-		int menuItemIdx = item.getItemId();
-		String[] menuItems = getResources().getStringArray(R.array.menu);
-		String menuItemName = menuItems[menuItemIdx];
-
-		Toast.makeText(SecretManager.this,
-				info.position + "번째" + menuItemName + "기능 시작", 0).show();
-
-		if (menuItemIdx == 0)
+		
+		switch(item.getItemId())
+		{
+		case 0:
 			ModifyUserInfo();
+			return true;
+			
+		case 1:
+			return true;
+			
+		case 2:
+			{
+				if(item.isChecked())item.setChecked(false);
+				else item.setChecked(true);
+				
+				MyItem mListItem = (MyItem)m_arryItem.get(m_nPosLongClick);
+				if(mListItem.strName.equals("") == false)
+				{
+					SQLiteOpenHelper dbHelper = new DBManager(SecretManager.this, "userList.db", null, 1);		
+					SQLiteDatabase db = dbHelper.getWritableDatabase();
+							
+					ContentValues cv = new ContentValues();
+					cv.put("mute", item.isChecked());
+					String strWhere = "name=\"" + mListItem.strName + "\" and tel=\"" + mListItem.strTel + "\"";
+					db.update("userList", cv, strWhere, null);
+					
+					db.close();
+				}
+				
+				RefreshList();
+			}
+			return true;
+			
+		case 3:
+			{
+				if(item.isChecked())item.setChecked(false);
+				else item.setChecked(true);
+				
+				MyItem mListItem = (MyItem)m_arryItem.get(m_nPosLongClick);
+				if(mListItem.strName.equals("") == false)
+				{
+					SQLiteOpenHelper dbHelper = new DBManager(SecretManager.this, "userList.db", null, 1);		
+					SQLiteDatabase db = dbHelper.getWritableDatabase();
+							
+					ContentValues cv = new ContentValues();
+					cv.put("noreceive", item.isChecked());
+					String strWhere = "name=\"" + mListItem.strName + "\" and tel=\"" + mListItem.strTel + "\"";
+					db.update("userList", cv, strWhere, null);
+					
+					db.close();
+				}
+				
+				RefreshList();
+			}
+			return true;
+			
+		default:
+			super.onContextItemSelected(item);
+			break;
+			
+		}
+/*		int menuItemIdx = item.getItemId();
+		
+		if(menuItemIdx == 2)
+		{
+			
+		}
+				
+		if (menuItemIdx == 0)
+			ModifyUserInfo();*/
 
 		return true;
 	}
@@ -151,6 +241,7 @@ public class SecretManager extends Activity {
 		});
 	}
 	
+	
 	void InsertItemToDB(int nCnt, AddUserDialog tmpDlg)
 	{
 		SQLiteOpenHelper dbHelper = new DBManager(SecretManager.this, "userList.db", null, 1);		
@@ -167,7 +258,7 @@ public class SecretManager extends Activity {
 					cv.put("name", tmpDlg.userInfo[i].strName);
 					cv.put("tel", tmpDlg.userInfo[i].number.get(j));
 					cv.put("mute", 0);
-					cv.put("receive", 0);
+					cv.put("noreceive", 0);
 					cv.put("restore", 0);
 					db.insert("userList", null, cv);
 				}
@@ -197,7 +288,7 @@ public class SecretManager extends Activity {
 		SQLiteDatabase db = dbHelper.getWritableDatabase();
 		
 		String sql = "select * from userList;";		
-		String[] columns = {"name", "tel", "mute", "receive", "restore"};
+		String[] columns = {"name", "tel", "mute", "noreceive", "restore"};
 		Cursor result = db.query("userList", columns, null, null, null, null, null);
 		
 		String str = "";
@@ -207,10 +298,10 @@ public class SecretManager extends Activity {
 			String name = result.getString(0);
 			String tel = result.getString(1);
 			int bMute = result.getInt(2);
-			int bReceive = result.getInt(3);
+			int bNoReceive = result.getInt(3);
 			int bRestore = result.getInt(4);
 			
-			MyItem item = new MyItem(name, tel, bMute, bReceive, bRestore);
+			MyItem item = new MyItem(name, tel, bMute, bNoReceive, bRestore);
 			arryItem.add(item);
 			++i;
 		}
@@ -447,21 +538,33 @@ public class SecretManager extends Activity {
 			startActivity(i);
 		}
 	};
+	
+	AdapterView.OnItemLongClickListener mItemLongClickListener = new AdapterView.OnItemLongClickListener() {
+
+		@Override
+		public boolean onItemLongClick(AdapterView parnet, View view, int position, long id) {
+			// TODO Auto-generated method stub
+			m_nPosLongClick = position;
+			
+			return false;
+		}
+		
+	};
 
 	class MyItem {
-		MyItem(String _strName, String _strTel, int _bMute, int _bReceive,
+		MyItem(String _strName, String _strTel, int _bMute, int _bNoReceive,
 				int _bRestore) {
 			strName = _strName;
 			strTel = _strTel;
 			bMute = _bMute;
-			bReceive = _bReceive;
+			bNoReceive = _bNoReceive;
 			bRestore = _bRestore;
 		}
 
 		String strName;
 		String strTel;
 		int bMute;
-		int bReceive;
+		int bNoReceive;
 		int bRestore;
 	}
 
@@ -511,6 +614,28 @@ public class SecretManager extends Activity {
 
 			txtName.setText(arrySrc.get(position).strName);
 			txtTel.setText(arrySrc.get(position).strTel);
+			
+			if(arrySrc.get(position).bMute == 0)
+			{
+				ImageView imgV_mute = (ImageView) convertView.findViewById(R.id.imgV_mute);
+				imgV_mute.setImageResource(R.drawable.ic_lock_silent_mode_off);
+			}
+			else
+			{
+				ImageView imgV_mute = (ImageView) convertView.findViewById(R.id.imgV_mute);
+				imgV_mute.setImageResource(R.drawable.ic_lock_silent_mode);
+			}
+			
+			if(arrySrc.get(position).bNoReceive == 1)
+			{
+				ImageView imgV_noReceive = (ImageView) convertView.findViewById(R.id.imgV_noReceiveCall);
+				imgV_noReceive.setImageResource(R.drawable.sym_call_missed);
+			}
+			else
+			{
+				ImageView imgV_noReceive = (ImageView) convertView.findViewById(R.id.imgV_noReceiveCall);
+				imgV_noReceive.setImageResource(R.drawable.sym_call_incoming);
+			}
 
 			return convertView;
 		}
