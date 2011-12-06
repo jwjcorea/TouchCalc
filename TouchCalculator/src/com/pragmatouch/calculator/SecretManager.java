@@ -38,6 +38,7 @@ import android.provider.ContactsContract.CommonDataKinds.Phone;
 public class SecretManager extends Activity {
 	ListView userList;
 	ArrayList<MyItem> m_arryItem;
+	MyListAdapter MyAdapter;
 	AddUserDialog dlg;
 	UserInfo[] userInfo;
 	int m_nPosLongClick;
@@ -152,6 +153,22 @@ public class SecretManager extends Activity {
 			return true;
 			
 		case 1:
+			{
+				MyItem mListItem = (MyItem)m_arryItem.get(m_nPosLongClick);
+				SQLiteOpenHelper dbHelper = new DBManager(SecretManager.this, "userList.db", null, 1);		
+				SQLiteDatabase db = dbHelper.getWritableDatabase();
+						
+				ContentValues cv = new ContentValues();
+				cv.put("mute", item.isChecked());
+				String strWhere = "name=\"" + mListItem.strName + "\" and tel=\"" + mListItem.strTel + "\"";
+				db.delete("userList", strWhere, null);			
+				
+				// close the database
+				db.close();
+				
+				m_arryItem.remove(m_nPosLongClick);
+				MyAdapter.notifyDataSetChanged();
+			}
 			return true;
 			
 		case 2:
@@ -173,7 +190,13 @@ public class SecretManager extends Activity {
 					db.close();
 				}
 				
-				RefreshList();
+				//RefreshList();
+				if(item.isChecked() == false)
+					m_arryItem.get(m_nPosLongClick).bMute = 0;
+				else
+					m_arryItem.get(m_nPosLongClick).bMute = 1;
+					
+				MyAdapter.notifyDataSetChanged();
 			}
 			return true;
 			
@@ -196,7 +219,13 @@ public class SecretManager extends Activity {
 					db.close();
 				}
 				
-				RefreshList();
+				//RefreshList();
+				if(item.isChecked() == false)
+					m_arryItem.get(m_nPosLongClick).bNoReceive = 0;
+				else
+					m_arryItem.get(m_nPosLongClick).bNoReceive = 1;
+					
+				MyAdapter.notifyDataSetChanged();
 			}
 			return true;
 			
@@ -248,7 +277,7 @@ public class SecretManager extends Activity {
 		SQLiteDatabase db = dbHelper.getWritableDatabase();
 		
 		for (int i = 0; i < nCnt; ++i) {
-			int nCntNum = tmpDlg.userInfo[i].number.size();					
+			int nCntNum = tmpDlg.userInfo[i].number.size();
 			for (int j = 0; j < nCntNum; ++j) {
 				{
 					//MyItem item = new MyItem(tmpDlg.userInfo[i].strName, tmpDlg.userInfo[i].number.get(j), 0, 0, 0);
@@ -283,7 +312,7 @@ public class SecretManager extends Activity {
 	
 	void RefreshList()
 	{
-		ArrayList<MyItem> arryItem = new ArrayList<MyItem>();		
+		m_arryItem = new ArrayList<MyItem>();		
 		SQLiteOpenHelper dbHelper = new DBManager(SecretManager.this, "userList.db", null, 1);		
 		SQLiteDatabase db = dbHelper.getWritableDatabase();
 		
@@ -302,7 +331,7 @@ public class SecretManager extends Activity {
 			int bRestore = result.getInt(4);
 			
 			MyItem item = new MyItem(name, tel, bMute, bNoReceive, bRestore);
-			arryItem.add(item);
+			m_arryItem.add(item);
 			++i;
 		}
 		
@@ -316,11 +345,8 @@ public class SecretManager extends Activity {
 			userList.setVisibility(View.GONE);
 		}
 		else
-		{		
-			// ¿˙¿Â
-			m_arryItem  = arryItem;		
-			
-			MyListAdapter MyAdapter = new MyListAdapter(SecretManager.this, R.layout.listitem, arryItem);
+		{	
+			MyAdapter = new MyListAdapter(SecretManager.this, R.layout.listitem, m_arryItem);
 			tvEmpty.setVisibility(View.GONE);
 			userList.setVisibility(View.VISIBLE);
 			userList.setAdapter(MyAdapter);
@@ -420,8 +446,7 @@ public class SecretManager extends Activity {
 					// TODO Auto-generated method stub
 					hide();
 
-					ManuallyAddUserDialog dlg = new ManuallyAddUserDialog(
-							SecretManager.this);
+					ManuallyAddUserDialog dlg = new ManuallyAddUserDialog(SecretManager.this);
 					dlg.show();
 					dlg.setOnDismissListener(new DialogInterface.OnDismissListener() {
 						
@@ -435,7 +460,22 @@ public class SecretManager extends Activity {
 							String strTel = tmpDlg.m_strTel;
 							
 							// Insert info to DB
-							//InsertToDB(strName, strTel);
+							SQLiteOpenHelper dbHelper = new DBManager(SecretManager.this, "userList.db", null, 1);		
+							SQLiteDatabase db = dbHelper.getWritableDatabase();
+										
+							ContentValues cv = new ContentValues();
+							cv.put("name", strName);
+							cv.put("tel", strTel);
+							cv.put("mute", 0);
+							cv.put("noreceive", 0);
+							cv.put("restore", 0);
+							db.insert("userList", null, cv);
+							
+							// close the database
+							db.close();
+							
+							// refresh the list
+							RefreshList();
 						}
 					});
 				}
@@ -444,8 +484,22 @@ public class SecretManager extends Activity {
 	}
 
 	void ModifyUserInfo() {
-		ModifyUserDialog dlg = new ModifyUserDialog(this);
+		// get the info from the array
+		MyItem selItem = (MyItem)m_arryItem.get(m_nPosLongClick);
+		
+		// show the dialog
+		ModifyUserDialog dlg = new ModifyUserDialog(this);		
+		dlg.SetInfo(selItem.strName, selItem.strTel);
 		dlg.show();
+		
+		dlg.setOnDismissListener(new DialogInterface.OnDismissListener() {
+			
+			@Override
+			public void onDismiss(DialogInterface dialog) {
+				// TODO Auto-generated method stub
+				RefreshList();
+			}
+		});
 	}
 
 	public class ManuallyAddUserDialog extends Dialog {
@@ -489,7 +543,21 @@ public class SecretManager extends Activity {
 	}
 
 	public class ModifyUserDialog extends Dialog {
-
+		String m_strName;
+		String m_strTel;
+		
+		void SetInfo(String strName, String strTel)
+		{
+			m_strName = strName;
+			m_strTel = strTel;
+			
+			EditText editName = (EditText) findViewById(R.id.editName);
+			EditText editTel = (EditText) findViewById(R.id.editTel);
+			
+			editName.setText(m_strName);
+			editTel.setText(m_strTel);
+		}
+		
 		public ModifyUserDialog(Context context) {
 			super(context);
 			// TODO Auto-generated constructor stub
@@ -498,14 +566,30 @@ public class SecretManager extends Activity {
 			setContentView(R.layout.dialog_direct_add_user);
 
 			Button btnSave = (Button) findViewById(R.id.btnSave);
-			Button btnCancel = (Button) findViewById(R.id.btnCancel);
+			Button btnCancel = (Button) findViewById(R.id.btnCancel);						
 
 			btnSave.setOnClickListener(new View.OnClickListener() {
 
 				@Override
 				public void onClick(View arg0) {
-					// TODO Auto-generated method stub
-
+					EditText editName = (EditText) findViewById(R.id.editName);
+					EditText editTel = (EditText) findViewById(R.id.editTel);
+					
+					// open the database
+					SQLiteOpenHelper dbHelper = new DBManager(SecretManager.this, "userList.db", null, 1);		
+					SQLiteDatabase db = dbHelper.getWritableDatabase();
+							
+					ContentValues cv = new ContentValues();
+					cv.put("name", editName.getText().toString());
+					cv.put("tel", editTel.getText().toString());					
+					String strWhere = "name=\"" + m_strName + "\" and tel=\"" + m_strTel + "\"";
+					db.update("userList", cv, strWhere, null);
+					
+					// close the database
+					db.close();
+					
+					// close the dialog
+					dismiss();
 				}
 			});
 
@@ -514,7 +598,7 @@ public class SecretManager extends Activity {
 				@Override
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
-					hide();
+					dismiss();
 				}
 			});
 		}
@@ -526,9 +610,6 @@ public class SecretManager extends Activity {
 		public void onItemClick(AdapterView parnet, View view, int position,
 				long id) {
 			// TODO Auto-generated method stub
-			String mes;
-			mes = "Select Item = " + position;
-			Toast.makeText(SecretManager.this, mes, 0).show();			
 			
 			MyItem item = (MyItem)m_arryItem.get(position);			
 			

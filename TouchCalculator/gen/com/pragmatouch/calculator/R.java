@@ -39,8 +39,10 @@ public final class R {
         public static final int keypadother1=0x7f020010;
         public static final int keypadresult1=0x7f020011;
         public static final int stackview1=0x7f020012;
-        public static final int sym_call_incoming=0x7f020013;
-        public static final int sym_call_missed=0x7f020014;
+        public static final int sym_action_call=0x7f020013;
+        public static final int sym_action_email=0x7f020014;
+        public static final int sym_call_incoming=0x7f020015;
+        public static final int sym_call_missed=0x7f020016;
     }
     public static final class id {
         public static final int TextView01=0x7f08001a;

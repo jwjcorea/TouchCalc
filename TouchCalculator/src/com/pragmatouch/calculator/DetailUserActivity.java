@@ -13,6 +13,8 @@ public class DetailUserActivity extends Activity {
 
 	Button btnTel = null;
 	Button btnMsg = null;
+	String m_strName;
+	String m_strTel;	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -30,12 +32,12 @@ public class DetailUserActivity extends Activity {
 		// set the user info
 		// 1. get the info
 		Intent i = getIntent();
-		String strName = i.getStringExtra("name");
-		String strTel = i.getStringExtra("tel");
+		m_strName = i.getStringExtra("name");
+		m_strTel = i.getStringExtra("tel");
 		
 		// 2. set the info
-		tvName.setText(strName);
-		tvTel.setText(strTel);
+		tvName.setText(m_strName);
+		tvTel.setText(m_strTel);
 		
 		// listener
 		btnTel.setOnClickListener(new View.OnClickListener() {
@@ -43,7 +45,7 @@ public class DetailUserActivity extends Activity {
 			@Override
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
-				Uri number = Uri.parse("tel:" + "010-2937-1864");
+				Uri number = Uri.parse("tel:" + m_strTel);
 				Intent i = new Intent(Intent.ACTION_DIAL, number);
 				startActivity(i);
 			}
@@ -55,7 +57,7 @@ public class DetailUserActivity extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Intent i = new Intent(Intent.ACTION_SENDTO);
-				i.setData(Uri.parse("smsto:" + "010-2937-1864"));
+				i.setData(Uri.parse("smsto:" + m_strTel));
 				startActivity(i);
 			}
 		});
