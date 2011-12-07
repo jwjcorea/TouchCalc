@@ -45,10 +45,10 @@ public final class R {
         public static final int sym_call_missed=0x7f020016;
     }
     public static final class id {
-        public static final int TextView01=0x7f08001b;
-        public static final int TextView02=0x7f080020;
-        public static final int TextView03=0x7f08001d;
-        public static final int TextView04=0x7f08001f;
+        public static final int TextView01=0x7f08001c;
+        public static final int TextView02=0x7f080021;
+        public static final int TextView03=0x7f08001e;
+        public static final int TextView04=0x7f080020;
         public static final int btnCancel=0x7f08000f;
         public static final int btnDelete=0x7f08000b;
         public static final int btnDirect=0x7f08000c;
@@ -57,35 +57,36 @@ public final class R {
         public static final int btnShowMsgList=0x7f080009;
         public static final int btnShowTelList=0x7f080008;
         public static final int btnTel=0x7f080005;
-        public static final int btnYes=0x7f080022;
-        public static final int editConfirmNewPwd=0x7f080021;
-        public static final int editCurPwd=0x7f08001c;
+        public static final int btnYes=0x7f080023;
+        public static final int checkboxItem=0x7f080016;
+        public static final int contactList=0x7f08000d;
+        public static final int editConfirmNewPwd=0x7f080022;
+        public static final int editCurPwd=0x7f08001d;
         public static final int editName=0x7f080011;
-        public static final int editNewPwd=0x7f08001e;
+        public static final int editNewPwd=0x7f08001f;
         public static final int editTel=0x7f080013;
-        public static final int grdButtons=0x7f080019;
+        public static final int grdButtons=0x7f08001a;
         public static final int imgV_mute=0x7f080014;
         public static final int imgV_noReceiveCall=0x7f080015;
         public static final int linearLayout1=0x7f080001;
         public static final int linearLayout2=0x7f080000;
         public static final int linearLayout3=0x7f080004;
         public static final int linearLayout4=0x7f080007;
-        public static final int listView1=0x7f08000d;
-        public static final int mnuDelete=0x7f080026;
-        public static final int mnuModify=0x7f080025;
-        public static final int mnuMute=0x7f080027;
-        public static final int mnuNoReceive=0x7f080028;
-        public static final int scrollView1=0x7f08001a;
-        public static final int textEmpty=0x7f080024;
+        public static final int mnuDelete=0x7f080027;
+        public static final int mnuModify=0x7f080026;
+        public static final int mnuMute=0x7f080028;
+        public static final int mnuNoReceive=0x7f080029;
+        public static final int scrollView1=0x7f08001b;
+        public static final int textEmpty=0x7f080025;
         public static final int textName=0x7f080002;
         public static final int textTel=0x7f080003;
         public static final int textView1=0x7f080010;
         public static final int textView2=0x7f080012;
         public static final int tvContactList=0x7f08000a;
-        public static final int txtInput=0x7f080017;
-        public static final int txtMemory=0x7f080018;
-        public static final int txtStack=0x7f080016;
-        public static final int userList=0x7f080023;
+        public static final int txtInput=0x7f080018;
+        public static final int txtMemory=0x7f080019;
+        public static final int txtStack=0x7f080017;
+        public static final int userList=0x7f080024;
     }
     public static final class layout {
         public static final int detailuser=0x7f030000;
@@ -94,9 +95,10 @@ public final class R {
         public static final int dialog_direct_add_user=0x7f030003;
         public static final int help=0x7f030004;
         public static final int listitem=0x7f030005;
-        public static final int main=0x7f030006;
-        public static final int password=0x7f030007;
-        public static final int secretmanager=0x7f030008;
+        public static final int listitem2=0x7f030006;
+        public static final int main=0x7f030007;
+        public static final int password=0x7f030008;
+        public static final int secretmanager=0x7f030009;
     }
     public static final class menu {
         public static final int mymenu=0x7f070000;

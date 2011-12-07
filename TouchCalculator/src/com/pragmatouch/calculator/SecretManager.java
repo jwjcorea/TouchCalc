@@ -2,6 +2,8 @@ package com.pragmatouch.calculator;
 
 import java.util.ArrayList;
 
+import android.R.bool;
+import android.R.integer;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.ContentValues;
@@ -11,6 +13,8 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.hardware.SensorListener;
+import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -28,21 +32,29 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
 
-public class SecretManager extends Activity {
+public class SecretManager extends Activity implements SensorListener {
 	ListView userList;
 	ArrayList<MyItem> m_arryItem;
 	MyListAdapter MyAdapter;
 	AddUserDialog dlg;
 	UserInfo[] userInfo;
 	int m_nPosLongClick;
-
+	SensorManager sensorMgr;
+	long lastUpdate;
+	float x,y,z,last_x,last_y,last_z;
+	
+	private static final int SHAKE_THRESHOLD = 500;
+	
 	@Override
 	protected void onResume() {
 		// TODO Auto-generated method stub
@@ -55,10 +67,10 @@ public class SecretManager extends Activity {
 		// TODO Auto-generated method stub
 		super.onCreateOptionsMenu(menu);
 
-		MenuItem item = menu.add(0, 1, 0, "»ç¿ëÀÚ Ãß°¡").setIcon(R.drawable.ic_input_add);		
+		MenuItem item = menu.add(0, 1, 0, "ì‚¬ìš©ì ì¶”ê°€").setIcon(R.drawable.ic_input_add);		
 		//item.setAlphabeticShortcut('a');
-		menu.add(0, 2, 0, "ºñ¹Ğ¹øÈ£ º¯°æ").setIcon(R.drawable.ic_lock_lock);
-		menu.add(0, 3, 0, "µµ¿ò¸»").setIcon(R.drawable.ic_dialog_alert_holo_light);
+		menu.add(0, 2, 0, "ë¹„ë°€ë²ˆí˜¸ ë³€ê²½").setIcon(R.drawable.ic_lock_lock);
+		menu.add(0, 3, 0, "ë„ì›€ë§").setIcon(R.drawable.ic_dialog_alert_holo_light);
 		return true;
 	}
 
@@ -95,11 +107,15 @@ public class SecretManager extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.secretmanager);
 		
-		RefreshList();		
+		RefreshList();
 		
 		userList.setOnItemClickListener(mItemClickListener);
 		userList.setOnItemLongClickListener(mItemLongClickListener);
 		registerForContextMenu(userList);
+		
+		// register the sensor manager
+		sensorMgr = (SensorManager) getSystemService(SENSOR_SERVICE);
+		sensorMgr.registerListener(this, SensorManager.SENSOR_ACCELEROMETER, SensorManager.SENSOR_DELAY_GAME);
 	}
 
 	@Override
@@ -109,7 +125,7 @@ public class SecretManager extends Activity {
 		if (v.getId() == R.id.userList) {
 			AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
 			
-			menu.setHeaderTitle("»ç¿ëÀÚ ¼³Á¤");			
+			menu.setHeaderTitle("ì‚¬ìš©ì ì„¤ì •");			
 			String[] menuItems = getResources().getStringArray(R.array.menu);			
 			for (int i = 0; i < menuItems.length; ++i)
 			{
@@ -249,52 +265,7 @@ public class SecretManager extends Activity {
 
 	void AddUser() {
 		dlg = new AddUserDialog(this);
-		dlg.show();
-
-		dlg.setOnDismissListener(new DialogInterface.OnDismissListener() {
-
-			@Override
-			public void onDismiss(DialogInterface dialog) {
-				// TODO Auto-generated method stub
-				
-				AddUserDialog tmpDlg = ((AddUserDialog) dialog);
-				
-				int nCnt = tmpDlg.userInfo.length;
-				
-				Log.i("jdebug", "onDismiss" + nCnt);
-								
-				DropTable();				
-				InsertItemToDB(nCnt, tmpDlg);
-				RefreshList();
-			}
-		});
-	}
-	
-	
-	void InsertItemToDB(int nCnt, AddUserDialog tmpDlg)
-	{
-		SQLiteOpenHelper dbHelper = new DBManager(SecretManager.this, "userList.db", null, 1);		
-		SQLiteDatabase db = dbHelper.getWritableDatabase();
-		
-		for (int i = 0; i < nCnt; ++i) {
-			int nCntNum = tmpDlg.userInfo[i].number.size();
-			for (int j = 0; j < nCntNum; ++j) {
-				{
-					//MyItem item = new MyItem(tmpDlg.userInfo[i].strName, tmpDlg.userInfo[i].number.get(j), 0, 0, 0);
-					//tmpArryItem.add(item);
-					
-					ContentValues cv = new ContentValues();
-					cv.put("name", tmpDlg.userInfo[i].strName);
-					cv.put("tel", tmpDlg.userInfo[i].number.get(j));
-					cv.put("mute", 0);
-					cv.put("noreceive", 0);
-					cv.put("restore", 0);
-					db.insert("userList", null, cv);
-				}
-			}
-		}
-		
-		db.close();
+		dlg.show();		
 	}
 	
 	void DropTable()
@@ -354,12 +325,12 @@ public class SecretManager extends Activity {
 	}
 
 	public class AddUserDialog extends Dialog {
-		UserInfo[] userInfo;
+		//UserInfo[] userInfo = null;
 
 		public AddUserDialog(Context context) {
 			super(context);
 
-			setTitle("»ç¿ëÀÚ Ãß°¡");
+			setTitle("ì‚¬ìš©ì ì¶”ê°€");
 			setContentView(R.layout.dialog_add_user);
 
 			// TODO Auto-generated constructor stub
@@ -369,14 +340,44 @@ public class SecretManager extends Activity {
 				@Override
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
-
-					/*
-					 * ContentValues values = new ContentValues();
-					 * values.put(Phone.RAW_CONTACT_ID, "ÀåÁØÇõ");
-					 * values.put(Phone.NUMBER, "010-2937-1864");
-					 * values.put(Phone.TYPE, Phone.TYPE_MOBILE); Uri uri =
-					 * getContentResolver().insert(Phone.CONTENT_URI, values);
-					 */
+					{
+						// this popup dialog has to be hid
+						hide();
+						
+						UserListDialog dlg = new UserListDialog(SecretManager.this);
+						dlg.show();
+						dlg.setOnDismissListener(new DialogInterface.OnDismissListener() {
+							
+							@Override
+							public void onDismiss(DialogInterface dialog) {
+								// TODO Auto-generated method stub
+								UserListDialog tmpDlg = ((UserListDialog) dialog);
+								
+								// get the value
+							/*	String strName = tmpDlg.m_strName;
+								String strTel = tmpDlg.m_strTel;
+								
+								// Insert info to DB
+								SQLiteOpenHelper dbHelper = new DBManager(SecretManager.this, "userList.db", null, 1);		
+								SQLiteDatabase db = dbHelper.getWritableDatabase();
+											
+								ContentValues cv = new ContentValues();
+								cv.put("name", strName);
+								cv.put("tel", strTel);
+								cv.put("mute", 0);
+								cv.put("noreceive", 0);
+								cv.put("restore", 0);
+								db.insert("userList", null, cv);
+								
+								// close the database
+								db.close();*/
+								
+								// refresh the list
+								RefreshList();
+							}
+						});
+					}
+					/*					
 					Cursor cursor = getTelList();
 
 					int nCnt = cursor.getCount();
@@ -421,7 +422,7 @@ public class SecretManager extends Activity {
 							} while (cursor.moveToNext() || i > nCnt);
 						}
 
-						// »ç¿ëÀÚ ÀÌ¸§°ú Æù ¹øÈ£¸¦ ´Ù ¾ò¾ú´Ù. Ã¤¿ö¶ó
+						// ì‚¬ìš©ì ì´ë¦„ê³¼ í° ë²ˆí˜¸ë¥¼ ë‹¤ ì–»ì—ˆë‹¤. ì±„ì›Œë¼
 						for (i = 0; i < nCnt; ++i) {
 							int nCntNum = userInfo[i].number.size();
 							for (int j = 0; j < nCntNum; ++j) {
@@ -434,7 +435,7 @@ public class SecretManager extends Activity {
 
 						// SecretManager.userInfo = userInfo;
 						dismiss();
-					}
+					}*/
 				}
 			});
 
@@ -455,27 +456,30 @@ public class SecretManager extends Activity {
 							// TODO Auto-generated method stub
 							ManuallyAddUserDialog tmpDlg = ((ManuallyAddUserDialog) dialog);
 							
-							// get the value
-							String strName = tmpDlg.m_strName;
-							String strTel = tmpDlg.m_strTel;
-							
-							// Insert info to DB
-							SQLiteOpenHelper dbHelper = new DBManager(SecretManager.this, "userList.db", null, 1);		
-							SQLiteDatabase db = dbHelper.getWritableDatabase();
-										
-							ContentValues cv = new ContentValues();
-							cv.put("name", strName);
-							cv.put("tel", strTel);
-							cv.put("mute", 0);
-							cv.put("noreceive", 0);
-							cv.put("restore", 0);
-							db.insert("userList", null, cv);
-							
-							// close the database
-							db.close();
-							
-							// refresh the list
-							RefreshList();
+							if(tmpDlg.m_strName != null && tmpDlg.m_strTel != null)
+							{	
+								// get the value
+								String strName = tmpDlg.m_strName;
+								String strTel = tmpDlg.m_strTel;
+								
+								// Insert info to DB
+								SQLiteOpenHelper dbHelper = new DBManager(SecretManager.this, "userList.db", null, 1);		
+								SQLiteDatabase db = dbHelper.getWritableDatabase();
+											
+								ContentValues cv = new ContentValues();
+								cv.put("name", strName);
+								cv.put("tel", strTel);
+								cv.put("mute", 0);
+								cv.put("noreceive", 0);
+								cv.put("restore", 0);
+								db.insert("userList", null, cv);
+								
+								// close the database
+								db.close();
+								
+								// refresh the list
+								RefreshList();
+							}
 						}
 					});
 				}
@@ -512,7 +516,7 @@ public class SecretManager extends Activity {
 			super(context);
 			// TODO Auto-generated constructor stub
 
-			setTitle("»ç¿ëÀÚ Ãß°¡");
+			setTitle("ì‚¬ìš©ì ì¶”ê°€");
 			setContentView(R.layout.dialog_direct_add_user);
 
 			Button btnSave = (Button) findViewById(R.id.btnSave);
@@ -541,6 +545,161 @@ public class SecretManager extends Activity {
 			});
 		}
 	}
+	
+	public class UserListDialog extends Dialog {
+		String m_strName;
+		String m_strTel;
+		UserInfo[] m_UserInfo = null;
+		ListView m_listContact = null;
+		ArrayList<MyItem> m_popupContactItem;
+		MyPopupListAdapter m_myPopupListAdapter;
+		
+		public UserListDialog(Context context) {
+			super(context);
+			// TODO Auto-generated constructor stub
+
+			setTitle("ì‚¬ìš©ì ì¶”ê°€");
+			setContentView(R.layout.dialog_contact_list);
+			
+			Button btnSave = (Button) findViewById(R.id.btnSave);
+			Button btnCancel = (Button) findViewById(R.id.btnCancel);	
+			m_listContact = (ListView) findViewById(R.id.contactList);		
+			
+			// read the contact list
+			ReadContactList();
+						
+			btnSave.setOnClickListener(new View.OnClickListener() {
+
+				@Override
+				public void onClick(View arg0) {
+					// TODO Auto-generated method stub					
+					// check the checkbox has checked					
+					
+					// open the database
+					SQLiteOpenHelper dbHelper = new DBManager(SecretManager.this, "userList.db", null, 1);		
+					SQLiteDatabase db = dbHelper.getWritableDatabase();
+					
+					int nSize = m_popupContactItem.size();
+					for(int i=0; i<nSize ; ++i)
+					{
+						if(m_myPopupListAdapter.arryCheckBox[i] == true)
+						{							
+							ContentValues cv = new ContentValues();
+							cv.put("name", m_popupContactItem.get(i).strName);
+							cv.put("tel", m_popupContactItem.get(i).strTel);
+							cv.put("mute", 0);
+							cv.put("noreceive", 0);
+							cv.put("restore", 0);
+							db.insert("userList", null, cv);							
+						}
+					}				
+					
+					// close the database
+					db.close();
+					
+					// close the dialog
+					dismiss();
+				}
+			});
+
+			btnCancel.setOnClickListener(new View.OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub					
+					dismiss();
+				}
+			});
+		}
+		
+		void ReadContactList()
+		{								
+			Cursor cursor = getTelList();
+
+			int nCnt = cursor.getCount();
+			if (nCnt == 0) {
+				hide();
+				return;
+			} else {
+				Log.d("jdebug", "end = " + nCnt);
+
+				int i = 0;
+				m_UserInfo = new UserInfo[nCnt];
+				for (i = 0; i < nCnt; ++i) {
+					m_UserInfo[i] = new UserInfo();
+					m_UserInfo[i].number = new ArrayList<String>();
+				}
+
+				if (cursor.moveToFirst()) {
+					int idIndex = cursor.getColumnIndex("_id");
+
+					i = 0;
+					do {
+						int id = cursor.getInt(idIndex);
+						m_UserInfo[i].strName = cursor.getString(1);
+
+						String phoneChk = cursor.getString(2);
+						if (phoneChk.equals("1")) {
+							Cursor phones = getContentResolver()
+									.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+											null,
+											ContactsContract.CommonDataKinds.Phone.CONTACT_ID
+													+ " = " + id, null,
+											null);
+
+							while (phones.moveToNext()) {
+								m_UserInfo[i].number.add(phones.getString(phones
+										.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
+							}
+						}
+
+						++i;
+
+					} while (cursor.moveToNext() || i > nCnt);
+				}
+
+				m_popupContactItem = new ArrayList<MyItem>();
+				
+				// ì‚¬ìš©ì ì´ë¦„ê³¼ í° ë²ˆí˜¸ë¥¼ ë‹¤ ì–»ì—ˆë‹¤. ì±„ì›Œë¼
+				for (i = 0; i < nCnt; ++i) {
+					int nCntNum = m_UserInfo[i].number.size();
+					for (int j = 0; j < nCntNum; ++j) {
+						
+						MyItem item = new MyItem(m_UserInfo[i].strName, m_UserInfo[i].number.get(j), 0, 0, 0);
+						m_popupContactItem.add(item);
+					}
+				}
+				
+				dismiss();
+			}
+			
+			m_myPopupListAdapter = new MyPopupListAdapter(SecretManager.this, R.layout.listitem2, m_popupContactItem);
+			m_listContact.setAdapter(m_myPopupListAdapter);
+			m_listContact.setOnItemClickListener(m_listContactListener);
+		}
+		
+		AdapterView.OnItemClickListener m_listContactListener = new AdapterView.OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView parent, View view, int position,
+					long id) {
+				// TODO Auto-generated method stub
+				String mes;
+				mes = "Select Item = " + position;
+				Log.i("jdebug", mes);
+				Toast.makeText(SecretManager.this, mes, Toast.LENGTH_SHORT).show();				
+			}
+		};
+		
+		/*
+		private void clickHandler(View view)
+		{
+			if(view.getId() == R.id.checkboxItem)
+			{
+				Log.i("jdebug", "hello jang");
+			}
+		}*/
+	}	
 
 	public class ModifyUserDialog extends Dialog {
 		String m_strName;
@@ -562,7 +721,7 @@ public class SecretManager extends Activity {
 			super(context);
 			// TODO Auto-generated constructor stub
 
-			setTitle("»ç¿ëÀÚ Ãß°¡");
+			setTitle("ì‚¬ìš©ì ì¶”ê°€");
 			setContentView(R.layout.dialog_direct_add_user);
 
 			Button btnSave = (Button) findViewById(R.id.btnSave);
@@ -721,16 +880,103 @@ public class SecretManager extends Activity {
 			return convertView;
 		}
 	}
+	
+	// the adapter class
+	class MyPopupListAdapter extends BaseAdapter {
+
+		Context mainCon;
+		LayoutInflater Inflater;
+		ArrayList<MyItem> arrySrc;
+		boolean[] arryCheckBox = null;
+		int layout;
+		boolean checked;
+		int m_nPos;
+
+		public MyPopupListAdapter(Context context, int _layout,
+				ArrayList<MyItem> _arrySrc) {
+			mainCon = context;
+			Inflater = (LayoutInflater) context
+					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			arrySrc = _arrySrc;
+			layout = _layout;
+			
+			arryCheckBox = new boolean[getCount()];			
+		}
+		
+
+		@Override
+		public int getCount() {
+			return arrySrc.size();
+		}
+
+		@Override
+		public Object getItem(int position) {
+			return arrySrc.get(position).strName;
+		}
+
+		@Override
+		public long getItemId(int position) {
+			return position;
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {			
+			// TODO Auto-generated method stub
+			final ViewHolder holder;			
+			final int pos = position;
+			
+			if (convertView == null)
+			{
+				convertView = Inflater.inflate(layout, parent, false);
+				holder = new ViewHolder();
+				holder.txtName = (TextView) convertView.findViewById(R.id.textName);
+				holder.txtTel = (TextView) convertView.findViewById(R.id.textTel);
+				holder.checkBox = (CheckBox) convertView.findViewById(R.id.checkboxItem);	
+				convertView.setTag(holder);
+			}
+			else
+				holder = (ViewHolder)convertView.getTag();
+
+			holder.txtName.setText(arrySrc.get(position).strName);
+			holder.txtTel.setText(arrySrc.get(position).strTel);
+			
+			// If the check box has checked, you have to set the value to the arryCheckBox
+			//CheckBox chkBox = (CheckBox) convertView.findViewById(R.id.checkboxItem);
+			//if(chkBox.isChecked())
+				//arryCheckBox[position] = 1;
+			//else
+				//arryCheckBox[position] = 0;
+			
+			holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+				
+				@Override
+				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+					// TODO Auto-generated method stub
+					arryCheckBox[pos] = isChecked;					
+				}
+			});
+			
+			holder.checkBox.setChecked(arryCheckBox[pos]);
+		
+			return convertView;
+		}
+		
+		protected class ViewHolder{
+			protected TextView txtName;
+			protected TextView txtTel;
+			protected CheckBox checkBox;
+		}
+	}
 
 	private Cursor getTelList() {
 		// Tel address
 		Uri people = Contacts.CONTENT_URI;
 
-		// °Ë»öÇÒ ÄÃ·³ Á¤ÇÏ±â
+		// ê²€ìƒ‰í•  ì»¬ëŸ¼ ì •í•˜ê¸°
 		String[] projection = new String[] { Contacts._ID,
 				Contacts.DISPLAY_NAME, Contacts.HAS_PHONE_NUMBER };
 
-		// Äõ¸® ³¯·Á¼­ Ä¿¼­ ¾ò±â
+		// ì¿¼ë¦¬ ë‚ ë ¤ì„œ ì»¤ì„œ ì–»ê¸°
 		String[] selectionArgs = null;
 		String sortOrder = ContactsContract.Contacts.DISPLAY_NAME
 				+ " COLLATE LOCALIZED ASC";
@@ -744,6 +990,41 @@ public class SecretManager extends Activity {
 
 		public UserInfo() {
 			// TODO Auto-generated constructor stub
+		}
+	}
+
+	@Override
+	public void onAccuracyChanged(int sensor, int accuracy) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onSensorChanged(int sensor, float[] values) {
+		// TODO Auto-generated method stub
+		if (sensor == SensorManager.SENSOR_ACCELEROMETER) {
+			long curTime = System.currentTimeMillis();
+			// only allow one update every 100ms.
+			if ((curTime - lastUpdate) > 100) {
+			long diffTime = (curTime - lastUpdate);
+			lastUpdate = curTime;
+
+			x = values[SensorManager.DATA_X];
+			y = values[SensorManager.DATA_Y];
+			z = values[SensorManager.DATA_Z];
+
+			float speed = Math.abs(x + y + z - last_x - last_y - last_z) / diffTime * 10000;
+			
+			if(speed > SHAKE_THRESHOLD)
+			{
+				//Toast.makeText(this, "shake detected w/ speed: " + speed, Toast.LENGTH_SHORT).show();
+				finish();
+			}
+
+			last_x = x;
+			last_y = y;
+			last_z = z;
+			}
 		}
 	}
 }

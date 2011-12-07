@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical" android:layout_width="match_parent"
+	android:layout_height="70dp" android:focusable="true">
+	<LinearLayout android:layout_height="wrap_content"
+		android:layout_width="match_parent" android:id="@+id/linearLayout2"
+		android:weightSum="1" android:gravity="center_vertical">
+		<LinearLayout android:gravity="center_vertical"
+			android:layout_height="70dp" android:orientation="vertical"
+			android:id="@+id/linearLayout1" android:layout_width="246dp"
+			android:layout_weight="0.50">
+			<TextView android:id="@+id/textName" android:textSize="20dp"
+				android:text="Jang Jun Hyeok" android:layout_marginLeft="10dp"
+				android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceMedium"
+				android:layout_width="match_parent"></TextView>
+			<TextView android:id="@+id/textTel" android:textSize="20dp"
+				android:text="010-1004-1004" android:layout_marginLeft="10dp"
+				android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceMedium"
+				android:layout_width="match_parent" android:textColor="@color/darkgrey"></TextView>
+		</LinearLayout>
+		<CheckBox android:text="" android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:checked="false" android:layout_marginRight="15dp" android:id="@+id/checkboxItem"></CheckBox>
+	</LinearLayout>
+
+</LinearLayout>
