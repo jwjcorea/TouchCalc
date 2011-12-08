@@ -41,7 +41,7 @@ public class main extends Activity {
 	double memoryValue = Double.NaN;
 
 	/** Called when the activity is first created. */
-	@Override
+	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
@@ -80,7 +80,7 @@ public class main extends Activity {
 		
 		// Set button click listener of the keypad adapter
 		mKeypadAdapter.setOnButtonClickListener(new OnClickListener() {
-			@Override
+			
 			public void onClick(View v) {
 				Button btn = (Button) v;
 				// Get the KeypadButton value which is used to identify the

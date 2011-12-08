@@ -24,7 +24,7 @@ public class SettingActivity extends Activity implements SensorListener{
 	TextView m_txtProgress;
 	int m_progress = 0;
 		
-	@Override
+	
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
@@ -45,18 +45,18 @@ public class SettingActivity extends Activity implements SensorListener{
 		SeekBar seekBar = (SeekBar) findViewById(R.id.seekBar1);
 		seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 			
-			@Override
+			
 			public void onStopTrackingTouch(SeekBar seekBar) {
 				// TODO Auto-generated method stub				
 			}
 			
-			@Override
+			
 			public void onStartTrackingTouch(SeekBar seekBar) {
 				// TODO Auto-generated method stub
 				
 			}
 			
-			@Override
+			
 			public void onProgressChanged(SeekBar seekBar, int progress,
 					boolean fromUser) {
 				// TODO Auto-generated method stub
@@ -81,7 +81,7 @@ public class SettingActivity extends Activity implements SensorListener{
 		seekBar.setProgress(m_progress);
 	}
 	
-	@Override
+	
 	protected void onStop() {
 		// TODO Auto-generated method stub
 		super.onStop();
@@ -161,13 +161,13 @@ public class SettingActivity extends Activity implements SensorListener{
 		}
 	}
 	
-	@Override
+	
 	public void onAccuracyChanged(int sensor, int accuracy) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
+	
 	public void onSensorChanged(int sensor, float[] values) {
 		// TODO Auto-generated method stub
 		if(SecretManager.SHAKE_THRESHOLD != 0)

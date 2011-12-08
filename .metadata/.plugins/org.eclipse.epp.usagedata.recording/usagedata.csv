@@ -1,0 +1,13 @@
+what,kind,bundleId,bundleVersion,description,time
+stopped,bundle,org.eclipse.mylyn.tasks.bugs,3.6.0.v20110608-1400,"org.eclipse.mylyn.tasks.bugs",1323343431272
+stopped,bundle,org.eclipse.mylyn.tasks.ui,3.6.0.v20110608-1400,"org.eclipse.mylyn.tasks.ui",1323343431272
+stopped,bundle,org.eclipse.help.webapp,3.6.0.v20110518,"org.eclipse.help.webapp",1323343431273
+stopped,bundle,org.eclipse.equinox.jsp.jasper.registry,1.0.200.v20100503,"org.eclipse.equinox.jsp.jasper.registry",1323343431273
+stopped,bundle,org.eclipse.equinox.jsp.jasper,1.0.300.v20110502,"org.eclipse.equinox.jsp.jasper",1323343431273
+stopped,bundle,org.eclipse.datatools.enablement.hsqldb.ui,1.0.0.v200906020900,"org.eclipse.datatools.enablement.hsqldb.ui",1323343431273
+stopped,bundle,org.eclipse.datatools.enablement.ingres.ui,1.0.0.v201105270214,"org.eclipse.datatools.enablement.ingres.ui",1323343431273
+stopped,bundle,org.eclipse.datatools.enablement.postgresql.ui,1.0.0.v200906020900,"org.eclipse.datatools.enablement.postgresql.ui",1323343431273
+stopped,bundle,org.eclipse.datatools.enablement.sqlite.ui,1.0.0.v200906020900,"org.eclipse.datatools.enablement.sqlite.ui",1323343431273
+stopped,bundle,org.eclipse.datatools.connectivity.db.generic.ui,1.0.1.v201004070709,"org.eclipse.datatools.connectivity.db.generic.ui",1323343431273
+stopped,bundle,org.eclipse.datatools.connectivity.apache.derby.ui,1.0.3.v201007080903,"org.eclipse.datatools.connectivity.apache.derby.ui",1323343431274
+stopped,bundle,org.eclipse.datatools.enablement.sybase.asa.schemaobjecteditor.examples,2.5.0.200810071,"org.eclipse.datatools.enablement.sybase.asa.schemaobjecteditor.examples",1323343431274

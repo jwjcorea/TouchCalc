@@ -13,7 +13,7 @@ public class HelpActivity extends Activity implements SensorListener{
 	
 	private static final int SHAKE_THRESHOLD = 500;
 	
-	@Override
+	
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
@@ -24,13 +24,13 @@ public class HelpActivity extends Activity implements SensorListener{
 		sensorMgr.registerListener(this, SensorManager.SENSOR_ACCELEROMETER, SensorManager.SENSOR_DELAY_GAME);			
 	}
 	
-	@Override
+	
 	public void onAccuracyChanged(int sensor, int accuracy) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
+	
 	public void onSensorChanged(int sensor, float[] values) {
 		// TODO Auto-generated method stub
 		if (sensor == SensorManager.SENSOR_ACCELEROMETER) {
