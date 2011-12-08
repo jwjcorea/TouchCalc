@@ -32,7 +32,7 @@ public class ChangePwdActivity extends Activity implements SensorListener{
 	long lastUpdate;
 	float x,y,z,last_x,last_y,last_z;
 	
-	@Override
+	
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
@@ -53,20 +53,20 @@ public class ChangePwdActivity extends Activity implements SensorListener{
 				
 		editCurPwd.addTextChangedListener(new TextWatcher() {
 			
-			@Override
+			
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
 				// TODO Auto-generated method stub
 				// only needed the num				
 			}
 			
-			@Override
+			
 			public void beforeTextChanged(CharSequence s, int start, int count,
 					int after) {
 				// TODO Auto-generated method stub
 				
 			}
 			
-			@Override
+			
 			public void afterTextChanged(Editable s) {
 				// TODO Auto-generated method stub
 				
@@ -75,7 +75,7 @@ public class ChangePwdActivity extends Activity implements SensorListener{
 		
 		btnYes.setOnClickListener(new View.OnClickListener() {
 			
-			@Override
+			
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				try {
@@ -182,7 +182,7 @@ public class ChangePwdActivity extends Activity implements SensorListener{
 		
 		btnCancel.setOnClickListener(new View.OnClickListener() {
 			
-			@Override
+			
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				finish();
@@ -190,13 +190,13 @@ public class ChangePwdActivity extends Activity implements SensorListener{
 		});
 	}
 	
-	@Override
+	
 	public void onAccuracyChanged(int sensor, int accuracy) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
+	
 	public void onSensorChanged(int sensor, float[] values) {
 		// TODO Auto-generated method stub
 		if(SecretManager.SHAKE_THRESHOLD != 0)

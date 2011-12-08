@@ -22,7 +22,7 @@ public class DetailUserActivity extends Activity implements SensorListener{
 	long lastUpdate;
 	float x,y,z,last_x,last_y,last_z;
 	
-	@Override
+	
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
@@ -55,7 +55,7 @@ public class DetailUserActivity extends Activity implements SensorListener{
 		// listener
 		btnTel.setOnClickListener(new View.OnClickListener() {
 			
-			@Override
+			
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
 				Uri number = Uri.parse("tel:" + m_strTel);
@@ -66,7 +66,7 @@ public class DetailUserActivity extends Activity implements SensorListener{
 		
 		btnMsg.setOnClickListener(new View.OnClickListener() {
 			
-			@Override
+			
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Intent i = new Intent(Intent.ACTION_SENDTO);
@@ -76,13 +76,13 @@ public class DetailUserActivity extends Activity implements SensorListener{
 		});
 	}
 	
-	@Override
+	
 	public void onAccuracyChanged(int sensor, int accuracy) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
+	
 	public void onSensorChanged(int sensor, float[] values) {
 		// TODO Auto-generated method stub
 		if(SecretManager.SHAKE_THRESHOLD != 0)

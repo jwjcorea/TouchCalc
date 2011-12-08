@@ -56,14 +56,14 @@ public class SecretManager extends Activity implements SensorListener {
 	
 	public static int SHAKE_THRESHOLD = 500;
 	
-	@Override
+	
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
 		Log.i("jdebug", "onResume");
 	}
 
-	@Override
+	
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// TODO Auto-generated method stub
 		super.onCreateOptionsMenu(menu);
@@ -75,7 +75,7 @@ public class SecretManager extends Activity implements SensorListener {
 		return true;
 	}
 
-	@Override
+	
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// TODO Auto-generated method stub
 		Intent i = new Intent();
@@ -102,7 +102,7 @@ public class SecretManager extends Activity implements SensorListener {
 		return false;
 	}
 
-	@Override
+	
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
@@ -122,7 +122,7 @@ public class SecretManager extends Activity implements SensorListener {
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 	}
 
-	@Override
+	
 	public void onCreateContextMenu(ContextMenu menu, View v,
 			ContextMenuInfo menuInfo) {
 		// TODO Auto-generated method stub
@@ -161,7 +161,7 @@ public class SecretManager extends Activity implements SensorListener {
 		}
 	}
 
-	@Override
+	
 	public boolean onContextItemSelected(MenuItem item) {
 		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item
 				.getMenuInfo();
@@ -341,7 +341,7 @@ public class SecretManager extends Activity implements SensorListener {
 			Button btnTel = (Button) findViewById(R.id.btnTel);
 			btnTel.setOnClickListener(new View.OnClickListener() {
 
-				@Override
+				
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
 					{
@@ -352,7 +352,7 @@ public class SecretManager extends Activity implements SensorListener {
 						dlg.show();
 						dlg.setOnDismissListener(new DialogInterface.OnDismissListener() {
 							
-							@Override
+							
 							public void onDismiss(DialogInterface dialog) {
 								// TODO Auto-generated method stub
 								UserListDialog tmpDlg = ((UserListDialog) dialog);
@@ -446,7 +446,7 @@ public class SecretManager extends Activity implements SensorListener {
 			Button btnDirect = (Button) findViewById(R.id.btnDirect);
 			btnDirect.setOnClickListener(new View.OnClickListener() {
 
-				@Override
+				
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
 					hide();
@@ -455,7 +455,7 @@ public class SecretManager extends Activity implements SensorListener {
 					dlg.show();
 					dlg.setOnDismissListener(new DialogInterface.OnDismissListener() {
 						
-						@Override
+						
 						public void onDismiss(DialogInterface dialog) {
 							// TODO Auto-generated method stub
 							ManuallyAddUserDialog tmpDlg = ((ManuallyAddUserDialog) dialog);
@@ -502,7 +502,7 @@ public class SecretManager extends Activity implements SensorListener {
 		
 		dlg.setOnDismissListener(new DialogInterface.OnDismissListener() {
 			
-			@Override
+			
 			public void onDismiss(DialogInterface dialog) {
 				// TODO Auto-generated method stub
 				RefreshList();
@@ -530,7 +530,7 @@ public class SecretManager extends Activity implements SensorListener {
 
 			btnSave.setOnClickListener(new View.OnClickListener() {
 
-				@Override
+				
 				public void onClick(View arg0) {
 					// TODO Auto-generated method stub
 					m_strName = m_editName.getText().toString();
@@ -541,7 +541,7 @@ public class SecretManager extends Activity implements SensorListener {
 
 			btnCancel.setOnClickListener(new View.OnClickListener() {
 
-				@Override
+				
 				public void onClick(View v) {
 					// TODO Auto-generated method stub					
 					dismiss();
@@ -574,7 +574,7 @@ public class SecretManager extends Activity implements SensorListener {
 						
 			btnSave.setOnClickListener(new View.OnClickListener() {
 
-				@Override
+				
 				public void onClick(View arg0) {
 					// TODO Auto-generated method stub					
 					// check the checkbox has checked					
@@ -608,7 +608,7 @@ public class SecretManager extends Activity implements SensorListener {
 
 			btnCancel.setOnClickListener(new View.OnClickListener() {
 
-				@Override
+				
 				public void onClick(View v) {
 					// TODO Auto-generated method stub					
 					dismiss();
@@ -684,7 +684,7 @@ public class SecretManager extends Activity implements SensorListener {
 		
 		AdapterView.OnItemClickListener m_listContactListener = new AdapterView.OnItemClickListener() {
 
-			@Override
+			
 			public void onItemClick(AdapterView parent, View view, int position,
 					long id) {
 				// TODO Auto-generated method stub
@@ -733,7 +733,7 @@ public class SecretManager extends Activity implements SensorListener {
 
 			btnSave.setOnClickListener(new View.OnClickListener() {
 
-				@Override
+				
 				public void onClick(View arg0) {
 					EditText editName = (EditText) findViewById(R.id.editName);
 					EditText editTel = (EditText) findViewById(R.id.editTel);
@@ -758,7 +758,7 @@ public class SecretManager extends Activity implements SensorListener {
 
 			btnCancel.setOnClickListener(new View.OnClickListener() {
 
-				@Override
+				
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
 					dismiss();
@@ -769,7 +769,7 @@ public class SecretManager extends Activity implements SensorListener {
 
 	AdapterView.OnItemClickListener mItemClickListener = new AdapterView.OnItemClickListener() {
 
-		@Override
+		
 		public void onItemClick(AdapterView parnet, View view, int position,
 				long id) {
 			// TODO Auto-generated method stub
@@ -785,7 +785,7 @@ public class SecretManager extends Activity implements SensorListener {
 	
 	AdapterView.OnItemLongClickListener mItemLongClickListener = new AdapterView.OnItemLongClickListener() {
 
-		@Override
+		
 		public boolean onItemLongClick(AdapterView parnet, View view, int position, long id) {
 			// TODO Auto-generated method stub
 			m_nPosLongClick = position;
@@ -829,22 +829,22 @@ public class SecretManager extends Activity implements SensorListener {
 			layout = _layout;
 		}
 
-		@Override
+		
 		public int getCount() {
 			return arrySrc.size();
 		}
 
-		@Override
+		
 		public Object getItem(int position) {
 			return arrySrc.get(position).strName;
 		}
 
-		@Override
+		
 		public long getItemId(int position) {
 			return position;
 		}
 
-		@Override
+		
 		public View getView(int position, View convertView, ViewGroup parent) {
 			// TODO Auto-generated method stub
 			final int pos = position;
@@ -908,22 +908,22 @@ public class SecretManager extends Activity implements SensorListener {
 		}
 		
 
-		@Override
+		
 		public int getCount() {
 			return arrySrc.size();
 		}
 
-		@Override
+		
 		public Object getItem(int position) {
 			return arrySrc.get(position).strName;
 		}
 
-		@Override
+		
 		public long getItemId(int position) {
 			return position;
 		}
 
-		@Override
+		
 		public View getView(int position, View convertView, ViewGroup parent) {			
 			// TODO Auto-generated method stub
 			final ViewHolder holder;			
@@ -953,7 +953,7 @@ public class SecretManager extends Activity implements SensorListener {
 			
 			holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 				
-				@Override
+				
 				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 					// TODO Auto-generated method stub
 					arryCheckBox[pos] = isChecked;					
@@ -997,13 +997,13 @@ public class SecretManager extends Activity implements SensorListener {
 		}
 	}
 
-	@Override
+	
 	public void onAccuracyChanged(int sensor, int accuracy) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
+	
 	public void onSensorChanged(int sensor, float[] values) {
 		// TODO Auto-generated method stub
 		if(SecretManager.SHAKE_THRESHOLD != 0)
