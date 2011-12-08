@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:android="http://schemas.android.com/apk/res/android">
-    <string name="hello">Hello World, main!</string>
-    <string name="app_name">TouchCalculator</string>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">    
+    <string name="app_name">계산기</string>
     <string name="cur_pwd">현재 비밀번호</string>
     <string name="new_pwd">새로운 비밀번호</string>
     <string name="new_pwd_sub1">   영문,숫자 4~10자까지 사용(혼용가능)</string>
@@ -19,7 +18,8 @@
     <item>수정</item>
     <item>삭제</item>
     <item>무음설정</item>
-    <item>수신거부</item>    
+    <item>수신거부</item>
+    <item>복구</item>    
     </string-array>
     
 </resources>

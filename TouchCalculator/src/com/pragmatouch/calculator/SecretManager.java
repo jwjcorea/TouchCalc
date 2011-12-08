@@ -1,11 +1,11 @@
 package com.pragmatouch.calculator;
 
 import java.util.ArrayList;
-
 import android.R.bool;
 import android.R.integer;
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -54,7 +54,7 @@ public class SecretManager extends Activity implements SensorListener {
 	long lastUpdate;
 	float x,y,z,last_x,last_y,last_z;
 	
-	public static int SHAKE_THRESHOLD = 500;
+	public static int SHAKE_THRESHOLD = 0;
 	
 	@Override
 	protected void onResume() {
@@ -156,7 +156,18 @@ public class SecretManager extends Activity implements SensorListener {
 						bNoReceive = true;
 					
 					menu.add(Menu.NONE, i, i, menuItems[i]).setCheckable(true).setChecked(bNoReceive);
-				}									
+				}		
+				else if(i == 4)
+				{
+					MyItem item = (MyItem)m_arryItem.get(m_nPosLongClick);
+					boolean bSync = false;
+					if(item.bSync == 0)
+						bSync = false;
+					else
+						bSync = true;
+					
+					menu.add(Menu.NONE, i, i, menuItems[i]).setCheckable(true).setChecked(bSync);
+				}		
 			}
 		}
 	}
@@ -249,6 +260,35 @@ public class SecretManager extends Activity implements SensorListener {
 			}
 			return true;
 			
+		case 4:
+			{
+				if(item.isChecked())item.setChecked(false);
+				else item.setChecked(true);
+				
+				MyItem mListItem = (MyItem)m_arryItem.get(m_nPosLongClick);
+				if(mListItem.strName.equals("") == false)
+				{
+					SQLiteOpenHelper dbHelper = new DBManager(SecretManager.this, "userList.db", null, 1);		
+					SQLiteDatabase db = dbHelper.getWritableDatabase();
+							
+					ContentValues cv = new ContentValues();
+					cv.put("sync", item.isChecked());
+					String strWhere = "name=\"" + mListItem.strName + "\" and tel=\"" + mListItem.strTel + "\"";
+					db.update("userList", cv, strWhere, null);
+					
+					db.close();
+				}
+				
+				//RefreshList();
+				if(item.isChecked() == false)
+					m_arryItem.get(m_nPosLongClick).bSync = 0;
+				else
+					m_arryItem.get(m_nPosLongClick).bSync = 1;
+					
+				MyAdapter.notifyDataSetChanged();
+			}
+			return true;
+			
 		default:
 			super.onContextItemSelected(item);
 			break;
@@ -292,7 +332,7 @@ public class SecretManager extends Activity implements SensorListener {
 		SQLiteDatabase db = dbHelper.getWritableDatabase();
 		
 		String sql = "select * from userList;";		
-		String[] columns = {"name", "tel", "mute", "noreceive", "restore"};
+		String[] columns = {"name", "tel", "mute", "noreceive", "sync"};
 		Cursor result = db.query("userList", columns, null, null, null, null, null);
 		
 		String str = "";
@@ -303,9 +343,9 @@ public class SecretManager extends Activity implements SensorListener {
 			String tel = result.getString(1);
 			int bMute = result.getInt(2);
 			int bNoReceive = result.getInt(3);
-			int bRestore = result.getInt(4);
+			int bSync = result.getInt(4);
 			
-			MyItem item = new MyItem(name, tel, bMute, bNoReceive, bRestore);
+			MyItem item = new MyItem(name, tel, bMute, bNoReceive, bSync);
 			m_arryItem.add(item);
 			++i;
 		}
@@ -346,35 +386,18 @@ public class SecretManager extends Activity implements SensorListener {
 					// TODO Auto-generated method stub
 					{
 						// this popup dialog has to be hid
-						hide();
+						dismiss();
 						
+						// show the UserListDialog
 						UserListDialog dlg = new UserListDialog(SecretManager.this);
 						dlg.show();
+						
 						dlg.setOnDismissListener(new DialogInterface.OnDismissListener() {
 							
 							@Override
 							public void onDismiss(DialogInterface dialog) {
 								// TODO Auto-generated method stub
 								UserListDialog tmpDlg = ((UserListDialog) dialog);
-								
-								// get the value
-							/*	String strName = tmpDlg.m_strName;
-								String strTel = tmpDlg.m_strTel;
-								
-								// Insert info to DB
-								SQLiteOpenHelper dbHelper = new DBManager(SecretManager.this, "userList.db", null, 1);		
-								SQLiteDatabase db = dbHelper.getWritableDatabase();
-											
-								ContentValues cv = new ContentValues();
-								cv.put("name", strName);
-								cv.put("tel", strTel);
-								cv.put("mute", 0);
-								cv.put("noreceive", 0);
-								cv.put("restore", 0);
-								db.insert("userList", null, cv);
-								
-								// close the database
-								db.close();*/
 								
 								// refresh the list
 								RefreshList();
@@ -475,7 +498,7 @@ public class SecretManager extends Activity implements SensorListener {
 								cv.put("tel", strTel);
 								cv.put("mute", 0);
 								cv.put("noreceive", 0);
-								cv.put("restore", 0);
+								cv.put("sync", 0);
 								db.insert("userList", null, cv);
 								
 								// close the database
@@ -570,7 +593,7 @@ public class SecretManager extends Activity implements SensorListener {
 			m_listContact = (ListView) findViewById(R.id.contactList);		
 			
 			// read the contact list
-			ReadContactList();
+			ReadContactList(context);
 						
 			btnSave.setOnClickListener(new View.OnClickListener() {
 
@@ -593,7 +616,7 @@ public class SecretManager extends Activity implements SensorListener {
 							cv.put("tel", m_popupContactItem.get(i).strTel);
 							cv.put("mute", 0);
 							cv.put("noreceive", 0);
-							cv.put("restore", 0);
+							cv.put("sync", 0);
 							db.insert("userList", null, cv);							
 						}
 					}				
@@ -616,8 +639,9 @@ public class SecretManager extends Activity implements SensorListener {
 			});
 		}
 		
-		void ReadContactList()
-		{								
+		void ReadContactList(Context context)
+		{	
+			// Get the tel list
 			Cursor cursor = getTelList();
 
 			int nCnt = cursor.getCount();
@@ -673,13 +697,14 @@ public class SecretManager extends Activity implements SensorListener {
 						m_popupContactItem.add(item);
 					}
 				}
-				
-				dismiss();
 			}
 			
 			m_myPopupListAdapter = new MyPopupListAdapter(SecretManager.this, R.layout.listitem2, m_popupContactItem);
 			m_listContact.setAdapter(m_myPopupListAdapter);
 			m_listContact.setOnItemClickListener(m_listContactListener);
+			
+			// Dismiss the waiting bar
+			
 		}
 		
 		AdapterView.OnItemClickListener m_listContactListener = new AdapterView.OnItemClickListener() {
@@ -797,19 +822,19 @@ public class SecretManager extends Activity implements SensorListener {
 
 	class MyItem {
 		MyItem(String _strName, String _strTel, int _bMute, int _bNoReceive,
-				int _bRestore) {
+				int _bSync) {
 			strName = _strName;
 			strTel = _strTel;
 			bMute = _bMute;
 			bNoReceive = _bNoReceive;
-			bRestore = _bRestore;
+			bSync = _bSync;
 		}
 
 		String strName;
 		String strTel;
 		int bMute;
 		int bNoReceive;
-		int bRestore;
+		int bSync;
 	}
 
 	// the adapter class
@@ -878,7 +903,18 @@ public class SecretManager extends Activity implements SensorListener {
 			else
 			{
 				ImageView imgV_noReceive = (ImageView) convertView.findViewById(R.id.imgV_noReceiveCall);
-				imgV_noReceive.setImageResource(R.drawable.sym_call_incoming);
+				imgV_noReceive.setImageResource(R.drawable.call_contact);
+			}
+			
+			if(arrySrc.get(position).bSync == 1)
+			{
+				ImageView imgSync = (ImageView) convertView.findViewById(R.id.img_sync);
+				imgSync.setImageResource(R.drawable.btn_star_big_on_selected);
+			}
+			else
+			{
+				ImageView imgSync = (ImageView) convertView.findViewById(R.id.img_sync);
+				imgSync.setImageResource(R.drawable.btn_star_big_off);
 			}
 
 			return convertView;

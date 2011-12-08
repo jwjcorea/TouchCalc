@@ -6,8 +6,7 @@
 		android:layout_width="match_parent" android:weightSum="1"
 		android:layout_height="70dp">
 		<LinearLayout android:orientation="vertical" android:id="@+id/linearLayout1"
-			android:layout_width="wrap_content" android:layout_weight="1.05"
-			android:gravity="center_vertical" android:layout_height="70dp">
+			android:gravity="center_vertical" android:layout_height="70dp" android:layout_width="200dp">
 			<TextView android:layout_marginLeft="10dp"
 				android:textAppearance="?android:attr/textAppearanceMedium"
 				android:layout_height="wrap_content" android:id="@+id/textName"
@@ -22,13 +21,13 @@
 		<LinearLayout android:id="@+id/linearLayout3"
 			android:gravity="right|center_vertical" android:layout_height="70dp"
 			android:layout_width="wrap_content">
-			<ImageView android:layout_width="wrap_content"
-				android:layout_height="wrap_content" android:id="@+id/imgV_mute"
-				android:src="@drawable/ic_lock_silent_mode_off"
-				android:layout_marginRight="10dp"></ImageView>
-			<ImageView android:layout_width="wrap_content"
-				android:layout_height="wrap_content" android:src="@drawable/sym_call_missed" android:layout_marginRight="20dp" android:id="@+id/imgV_noReceiveCall"></ImageView>
-
+			<ImageView android:id="@+id/imgV_mute" android:src="@drawable/ic_lock_silent_mode_off"
+				android:layout_marginRight="10dp" android:layout_height="30dp"
+				android:layout_width="30dp"></ImageView>
+			<ImageView android:id="@+id/imgV_noReceiveCall" android:layout_height="30dp"
+				android:layout_width="30dp" android:layout_marginRight="10dp" android:src="@drawable/call_contact"></ImageView>
+			<ImageView android:layout_height="30dp" android:layout_width="30dp"
+				android:layout_marginRight="15dp" android:id="@+id/img_sync" android:src="@drawable/btn_star_big_off"></ImageView>
 		</LinearLayout>
 	</LinearLayout>
 

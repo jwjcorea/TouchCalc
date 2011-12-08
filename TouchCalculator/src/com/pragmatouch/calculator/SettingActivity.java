@@ -66,7 +66,7 @@ public class SettingActivity extends Activity implements SensorListener{
 				if(progress == 0)
 					SecretManager.SHAKE_THRESHOLD = 0;
 				else
-					SecretManager.SHAKE_THRESHOLD =  1100 - (progress * 10);
+					SecretManager.SHAKE_THRESHOLD =  1200 - (progress * 10);
 				
 				// show the progress ratings
 				m_txtProgress.setText("¹Î°¨µµ : " + progress + "%");

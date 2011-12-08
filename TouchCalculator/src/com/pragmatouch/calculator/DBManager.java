@@ -16,7 +16,7 @@ public class DBManager extends SQLiteOpenHelper {
 	@Override
 	public void onCreate(SQLiteDatabase arg0) {
 		// TODO Auto-generated method stub		
-		arg0.execSQL("Create table userList (name text, tel text, mute integer, noreceive integer, restore integer);");
+		arg0.execSQL("Create table userList (name text, tel text, mute integer, noreceive integer, sync integer);");
 	}
 
 	@Override
