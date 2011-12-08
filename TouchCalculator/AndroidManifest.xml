@@ -15,8 +15,8 @@
 		<activity android:name=".SecretManager"></activity>
 		<activity android:name=".AddFilterActivity"></activity>
 		<activity android:name=".ChangePwdActivity"></activity>
-		<activity android:name=".HelpActivity"></activity>
 		<activity android:name=".DetailUserActivity"></activity>
+		<activity android:name=".SettingActivity"></activity>
 
 	</application>
 	<uses-sdk android:minSdkVersion="8" />

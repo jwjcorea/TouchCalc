@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical" android:layout_width="match_parent"
+	android:layout_height="match_parent">
+	<TextView android:text="흔들 경우 계산기 화면으로 이동함" android:id="@+id/textView1"
+		android:layout_width="wrap_content" android:layout_height="wrap_content"
+		android:layout_marginLeft="10dp" android:textAppearance="?android:attr/textAppearanceMedium"
+		android:layout_marginTop="20dp"></TextView>
+	<TextView android:id="@+id/txtView" android:text="흔들기 민감도 설정"
+		android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceMedium"
+		android:layout_width="wrap_content" android:layout_marginLeft="10dp" android:textColor="@color/darkgrey"></TextView>
+	<TextView android:text="민감도 : "
+		android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceMedium"
+		android:layout_width="wrap_content" android:layout_marginTop="20dp"
+		android:layout_gravity="right" android:layout_marginRight="20dp" android:id="@+id/txtProgress"></TextView>
+	<SeekBar android:id="@+id/seekBar1" android:layout_height="wrap_content"
+		android:layout_width="match_parent" android:layout_marginLeft="20dp"
+		android:layout_marginRight="20dp" android:max="100"></SeekBar>
+
+</LinearLayout>
