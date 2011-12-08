@@ -44,7 +44,8 @@ public final class R {
         public static final int stackview1=0x7f020015;
         public static final int sym_action_call=0x7f020016;
         public static final int sym_action_email=0x7f020017;
-        public static final int sym_call_missed=0x7f020018;
+        public static final int sym_call_incoming=0x7f020018;
+        public static final int sym_call_missed=0x7f020019;
     }
     public static final class id {
         public static final int TextView01=0x7f08001d;
@@ -99,12 +100,13 @@ public final class R {
         public static final int dialog_add_user=0x7f030001;
         public static final int dialog_contact_list=0x7f030002;
         public static final int dialog_direct_add_user=0x7f030003;
-        public static final int listitem=0x7f030004;
-        public static final int listitem2=0x7f030005;
-        public static final int main=0x7f030006;
-        public static final int password=0x7f030007;
-        public static final int secretmanager=0x7f030008;
-        public static final int setting=0x7f030009;
+        public static final int help=0x7f030004;
+        public static final int listitem=0x7f030005;
+        public static final int listitem2=0x7f030006;
+        public static final int main=0x7f030007;
+        public static final int password=0x7f030008;
+        public static final int secretmanager=0x7f030009;
+        public static final int setting=0x7f03000a;
     }
     public static final class menu {
         public static final int mymenu=0x7f070000;
