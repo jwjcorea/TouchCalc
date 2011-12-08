@@ -2,6 +2,7 @@ package com.pragmatouch.calculator;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.hardware.SensorListener;
 import android.hardware.SensorManager;
 import android.net.Uri;
@@ -31,6 +32,9 @@ public class DetailUserActivity extends Activity implements SensorListener{
 		// register the sensor manager
 		sensorMgr = (SensorManager) getSystemService(SENSOR_SERVICE);
 		sensorMgr.registerListener(this, SensorManager.SENSOR_ACCELEROMETER, SensorManager.SENSOR_DELAY_GAME);
+		
+		// screen fix
+		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 				
 		// get the control
 		btnTel = (Button) findViewById(R.id.btnTel);

@@ -13,6 +13,7 @@ import java.util.Stack;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -67,6 +68,9 @@ public class main extends Activity {
 		memoryStatText.setText("");
 
 		mStackText = (TextView) findViewById(R.id.txtStack);
+		
+		// screen fix
+		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);		
 
 		// Create Keypad Adapter
 		mKeypadAdapter = new KeypadAdapter(this);
