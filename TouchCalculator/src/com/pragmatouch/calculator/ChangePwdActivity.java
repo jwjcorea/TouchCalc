@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.regex.Pattern;
 
 import android.app.Activity;
 import android.content.Context;
@@ -13,6 +14,9 @@ import android.hardware.SensorListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.InputFilter;
+import android.text.InputType;
+import android.text.Spanned;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -32,6 +36,18 @@ public class ChangePwdActivity extends Activity implements SensorListener{
 	long lastUpdate;
 	float x,y,z,last_x,last_y,last_z;
 	
+	public InputFilter filterNum = new InputFilter() {
+		
+		public CharSequence filter(CharSequence source, int start, int end,
+				Spanned dest, int dstart, int dend) {
+			// TODO Auto-generated method stub
+			Pattern ps = Pattern.compile("^[0-9]+$");
+			if (!ps.matcher(source).matches()) {
+				return "";
+			}
+			return null;
+		}
+	};
 	
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -50,7 +66,14 @@ public class ChangePwdActivity extends Activity implements SensorListener{
 		editConfirmPwd = (EditText) findViewById(R.id.editConfirmNewPwd);
 		btnYes = (Button) findViewById(R.id.btnYes);
 		btnCancel = (Button) findViewById(R.id.btnCancel);
-				
+		
+		editCurPwd.setInputType(InputType.TYPE_CLASS_NUMBER);
+		editNewPwd.setInputType(InputType.TYPE_CLASS_NUMBER);
+		editConfirmPwd.setInputType(InputType.TYPE_CLASS_NUMBER);
+		editCurPwd.setFilters(new InputFilter[] { new InputFilter.LengthFilter(4)}); // limit the input				
+		editNewPwd.setFilters(new InputFilter[] { new InputFilter.LengthFilter(4)}); // limit the input
+		editConfirmPwd.setFilters(new InputFilter[] { new InputFilter.LengthFilter(4)}); // limit the input
+		
 		editCurPwd.addTextChangedListener(new TextWatcher() {
 			
 			

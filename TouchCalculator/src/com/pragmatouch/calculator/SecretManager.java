@@ -157,7 +157,7 @@ public class SecretManager extends Activity implements SensorListener {
 					
 					menu.add(Menu.NONE, i, i, menuItems[i]).setCheckable(true).setChecked(bNoReceive);
 				}		
-				else if(i == 4)
+				/*else if(i == 4)
 				{
 					MyItem item = (MyItem)m_arryItem.get(m_nPosLongClick);
 					boolean bSync = false;
@@ -167,7 +167,7 @@ public class SecretManager extends Activity implements SensorListener {
 						bSync = true;
 					
 					menu.add(Menu.NONE, i, i, menuItems[i]).setCheckable(true).setChecked(bSync);
-				}		
+				}		*/
 			}
 		}
 	}
@@ -260,7 +260,7 @@ public class SecretManager extends Activity implements SensorListener {
 			}
 			return true;
 			
-		case 4:
+		/*case 4:
 			{
 				if(item.isChecked())item.setChecked(false);
 				else item.setChecked(true);
@@ -287,7 +287,7 @@ public class SecretManager extends Activity implements SensorListener {
 					
 				MyAdapter.notifyDataSetChanged();
 			}
-			return true;
+			return true;*/
 			
 		default:
 			super.onContextItemSelected(item);
@@ -908,7 +908,7 @@ public class SecretManager extends Activity implements SensorListener {
 				imgV_noReceive.setImageResource(R.drawable.call_contact);
 			}
 			
-			if(arrySrc.get(position).bSync == 1)
+			/*if(arrySrc.get(position).bSync == 1)
 			{
 				ImageView imgSync = (ImageView) convertView.findViewById(R.id.img_sync);
 				imgSync.setImageResource(R.drawable.btn_star_big_on_selected);
@@ -917,7 +917,7 @@ public class SecretManager extends Activity implements SensorListener {
 			{
 				ImageView imgSync = (ImageView) convertView.findViewById(R.id.img_sync);
 				imgSync.setImageResource(R.drawable.btn_star_big_off);
-			}
+			}*/
 
 			return convertView;
 		}
