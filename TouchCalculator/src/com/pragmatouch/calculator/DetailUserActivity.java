@@ -1,14 +1,25 @@
 package com.pragmatouch.calculator;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.database.Cursor;
 import android.hardware.SensorListener;
 import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.CallLog;
+import android.provider.ContactsContract;
+import android.provider.ContactsContract.Contacts;
+import android.provider.ContactsContract.RawContacts;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,8 +36,15 @@ public class DetailUserActivity extends Activity implements SensorListener{
 	
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
+		
+		
 		super.onCreate(savedInstanceState);
 		
+		
+
+
+		  
+		  
 		setContentView(R.layout.detailuser);
 		
 		// register the sensor manager
@@ -49,8 +67,16 @@ public class DetailUserActivity extends Activity implements SensorListener{
 		m_strTel = i.getStringExtra("tel");
 		
 		// 2. set the info
-		tvName.setText(m_strName);
+		tvName.setText(m_strName); 
 		tvTel.setText(m_strTel);
+		
+		Log.i("================================>","111");
+		//phoneBookControl(m_strTel, true);  // 리스트 보기 
+		phoneBookControl(m_strTel, false); // 삭제하기 
+		
+		Log.i("================================>",CallLog.Calls.NUMBER);
+
+
 		
 		// listener
 		btnTel.setOnClickListener(new View.OnClickListener() {
@@ -113,4 +139,101 @@ public class DetailUserActivity extends Activity implements SensorListener{
 			}
 		}
 	}
+
+	    public void phoneBookControl(String phoneNumber, boolean type) {
+	    	
+            int callcount = 0;
+            String callname = "";
+            String calltype = "";
+            String calllog = "";
+	    	
+	    	Cursor curCallLog = getCallHistoryCursor(this, phoneNumber);
+	    	
+	    	
+            if (curCallLog.moveToFirst() && curCallLog.getCount() > 0) {
+                while (curCallLog.isAfterLast() == false) {
+                	
+                	StringBuffer sb = new StringBuffer();
+
+                	
+                	if(type){
+                        if (curCallLog.getString(curCallLog
+                                .getColumnIndex(CallLog.Calls.TYPE)).equals(MESSAGE_TYPE_INBOX)){
+                            calltype = "수신";
+                        }
+                        else if (curCallLog.getString(curCallLog
+                                .getColumnIndex(CallLog.Calls.TYPE)).equals(MESSAGE_TYPE_SENT)){
+                            calltype = "발신";                    
+                        }
+                        else if (curCallLog.getString(curCallLog
+                                .getColumnIndex(CallLog.Calls.TYPE)).equals(MESSAGE_TYPE_CONVERSATIONS)){
+                            calltype = "부재중";                    
+                        }
+                        
+                        if (curCallLog.getString(curCallLog
+                                .getColumnIndex(CallLog.Calls.CACHED_NAME)) == null) {
+                            callname = "NoName";
+                        }
+                        else {
+                            callname = curCallLog.getString(curCallLog
+                                    .getColumnIndex(CallLog.Calls.CACHED_NAME));
+                        }
+                        sb.append(timeToString(curCallLog.getLong(curCallLog
+                                .getColumnIndex(CallLog.Calls.DATE))));
+                        sb.append("\t").append(calltype);
+                        sb.append("\t").append(callname);
+                        sb.append("\t").append(curCallLog.getString(curCallLog
+                                .getColumnIndex(CallLog.Calls.NUMBER)));
+                    		            
+                        curCallLog.moveToNext();
+                        callcount++;
+                        Log.i("call history[", sb.toString());
+                	}else{
+                		
+                		
+                		
+                		getBaseContext().getContentResolver().delete(CallLog.Calls.CONTENT_URI, " number = '"+phoneNumber+"'",null);
+                        curCallLog.moveToNext();
+                        callcount++;
+                	}
+                	
+
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                }  // while end
+            }
+	    	
+	    }
+	    
+	    
+	    
+	    private String timeToString(Long time) {
+	        SimpleDateFormat simpleFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	        String date = simpleFormat.format(new Date(time));
+	        return date;
+	    }
+	    
+	    
+	    
+	    final static private String[] CALL_PROJECTION = { CallLog.Calls.TYPE,
+            CallLog.Calls.CACHED_NAME, CallLog.Calls.NUMBER,
+            CallLog.Calls.DATE, CallLog.Calls.DURATION };
+
+	    public static final String MESSAGE_TYPE_INBOX = "1";
+	    public static final String MESSAGE_TYPE_SENT = "2";
+	    public static final String MESSAGE_TYPE_CONVERSATIONS = "3";
+	    public static final String MESSAGE_TYPE_NEW = "new";
+
+	    private Cursor getCallHistoryCursor(Context context, String  phoneNumber) {
+	        Cursor cursor = context.getContentResolver().query(
+	                CallLog.Calls.CONTENT_URI, CALL_PROJECTION,
+	                " number = '"+phoneNumber+"'", null, CallLog.Calls.DEFAULT_SORT_ORDER);
+	        
+	        return cursor;
+	    }
 }

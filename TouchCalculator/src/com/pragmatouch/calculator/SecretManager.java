@@ -633,7 +633,9 @@ public class SecretManager extends Activity implements SensorListener {
 
 				
 				public void onClick(View v) {
-					// TODO Auto-generated method stub					
+					// TODO Auto-generated method stub	
+					
+					
 					dismiss();
 				}
 			});
