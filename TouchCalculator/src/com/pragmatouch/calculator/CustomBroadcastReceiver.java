@@ -6,7 +6,11 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.media.AudioManager;
 import android.os.Bundle;
+import android.telephony.CellLocation;
+import android.telephony.PhoneStateListener;
+import android.telephony.ServiceState;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
@@ -19,6 +23,7 @@ public class CustomBroadcastReceiver extends BroadcastReceiver {
 		
 		
 		TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+		
 
 		Bundle b = intent.getExtras();
 
@@ -30,46 +35,47 @@ public class CustomBroadcastReceiver extends BroadcastReceiver {
 			
 			SQLiteOpenHelper dbHelper = new DBManager(context, "userList.db", null, 1);		
 			SQLiteDatabase db = dbHelper.getWritableDatabase();
-			
-			
 			String where = " tel ='"+incommingNumber+"'";
-			
 
 			Cursor c  = db.query("userList", null , where, null, null, null, null);
-			String resultset = "";
+			String  notsilent= "";
+			String  notReceive ="";
 			
 			while(c.moveToNext()){
-				Log.i("BBBBBBBBBBBBBBBBBBBB", c.getString(0));
-				Log.i("CCCCCCCCCCCCCCCCCCCCC", c.getString(1));
-				Log.i("CCCCCCCCCCCCCCCCCCCCC", c.getString(2)); // 무음일 경우 1
-				Log.i("CCCCCCCCCCCCCCCCCCCCC", c.getString(3));  // 수신거부일 경우 1
-				
-				resultset =  c.getString(3);
+				notsilent =  c.getString(2);
+				notReceive = c.getString(3);
 			}
-
 			db.close();
 			
 			 
 			  
 			// 무음일 경우 
-			if(resultset.equals("1")){
-				Log.i("999999999999999999999", resultset);  // 수신거부일 경우 1
+			if(notsilent.equals("1")){
+				Log.i("무음 세팅입니다.", incommingNumber);  // 무음 세팅
+				AudioManager  aManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+				int mode = aManager.getRingerMode();
+				aManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+
+				  
+				MPhoneStateListener phoneStateListener = new MPhoneStateListener(aManager,  mode);
+				tm.listen(phoneStateListener, phoneStateListener.LISTEN_CALL_STATE);
+
 				
 
 
-
-
+			// 수신 거부일 경우 	
+			}else if(notReceive.endsWith("1")){
+				Log.i("수신거부 세팅입니다.", incommingNumber);  // 무음 세팅
+				
 				
 			}
 
 
-
-			
-
 		}
 
 	}
-	
+
+
 	
 
 

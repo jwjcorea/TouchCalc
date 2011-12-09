@@ -26,8 +26,8 @@ public class ChangePwdActivity extends Activity implements SensorListener{
 	EditText editCurPwd;
 	EditText editNewPwd;
 	EditText editConfirmPwd;
-	Button btnYes;
-	Button btnCancel;
+	Button btnYes; 
+	Button btnCancel;  
 	SensorManager sensorMgr;
 	long lastUpdate;
 	float x,y,z,last_x,last_y,last_z;
