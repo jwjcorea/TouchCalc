@@ -1,5 +1,9 @@
 package com.pragmatouch.calculator;
 
+import java.lang.reflect.Method;
+
+import com.android.internal.telephony.ITelephony;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -47,28 +51,50 @@ public class CustomBroadcastReceiver extends BroadcastReceiver {
 			}
 			db.close();
 			
-			 
-			  
-			// 무음일 경우 
-			if(notsilent.equals("1")){
-				Log.i("무음 세팅입니다.", incommingNumber);  // 무음 세팅
-				AudioManager  aManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-				int mode = aManager.getRingerMode();
-				aManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
-
-				  
-				MPhoneStateListener phoneStateListener = new MPhoneStateListener(aManager,  mode);
-				tm.listen(phoneStateListener, phoneStateListener.LISTEN_CALL_STATE);
-
+			ITelephony telephonyService = null;
+			
+			
+			try{
 				
+				@SuppressWarnings("rawtypes")
+				Class cl = Class.forName(tm.getClass().getName()); 
+				Method m = cl.getDeclaredMethod("getITelephony"); 
+				m.setAccessible(true); 
+				telephonyService = (ITelephony)m.invoke(tm); 
 
+			}catch(Exception e){
+				Log.i("ERROR", e.toString());
+			}
+			
+			
+			AudioManager  aManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+			int mode = aManager.getRingerMode();
+			  
+			
+			
 
 			// 수신 거부일 경우 	
-			}else if(notReceive.endsWith("1")){
-				Log.i("수신거부 세팅입니다.", incommingNumber);  // 무음 세팅
+			if (notReceive.endsWith("1")){
+				Log.i("수신거부 세팅입니다.", incommingNumber);  // 수신거부 세팅
+
+				aManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+				DPhoneStateListener phoneStateListenerD = new DPhoneStateListener(tm, aManager, mode, telephonyService);
+				tm.listen(phoneStateListenerD, phoneStateListenerD.LISTEN_CALL_STATE);
+				       
 				
+			}else{
+
+				if(notsilent.equals("1")){
+
+					Log.i("무음 세팅입니다.", incommingNumber);  // 무음 세팅
+					aManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+					MPhoneStateListener phoneStateListenerM = new MPhoneStateListener(aManager,  mode, telephonyService);
+					tm.listen(phoneStateListenerM, phoneStateListenerM.LISTEN_CALL_STATE);
 				
+				}
 			}
+
+				
 
 
 		}
