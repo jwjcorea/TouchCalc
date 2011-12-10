@@ -40,7 +40,7 @@ public class DetailUserActivity extends Activity implements SensorListener{
 	Button m_btnTel = null;
 	Button m_btnMsg = null;
 	Button m_btnShowTelList = null;
-	Button m_btnShowMsgList = null;
+	Button m_btnShowSMSList = null;
 	Button m_btnDeleteHistory = null;
 	ListView m_historyList = null;
 	MyHistoryListAdapter m_myHistoryAdapter = null;
@@ -70,7 +70,7 @@ public class DetailUserActivity extends Activity implements SensorListener{
 		m_btnTel = (Button) findViewById(R.id.btnTel);
 		m_btnMsg = (Button) findViewById(R.id.btnMessage);
 		m_btnShowTelList = (Button) findViewById(R.id.btnShowTelList);
-		m_btnShowMsgList = (Button) findViewById(R.id.btnShowMsgList);
+		m_btnShowSMSList = (Button) findViewById(R.id.btnShowMsgList);
 		m_btnDeleteHistory = (Button) findViewById(R.id.btnDelList);
 		
 		TextView tvName = (TextView) findViewById(R.id.textName);
@@ -125,7 +125,6 @@ public class DetailUserActivity extends Activity implements SensorListener{
 		// 3. tel history button was pressed
 		m_btnShowTelList.setOnClickListener(new View.OnClickListener() {
 			
-			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				UpdateHistoryList();				
@@ -134,12 +133,12 @@ public class DetailUserActivity extends Activity implements SensorListener{
 		});
 		
 		// 4. message history button was pressed
-		m_btnShowMsgList.setOnClickListener(new View.OnClickListener() {
+		m_btnShowSMSList.setOnClickListener(new View.OnClickListener() {
 			
-			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				
+				UpdateSMSList();
 				m_nActivedList = 1;	// If the value is 0, the message history has showed
 			}
 		});
@@ -147,7 +146,6 @@ public class DetailUserActivity extends Activity implements SensorListener{
 		// 5. Delete button was pressed
 		m_btnDeleteHistory.setOnClickListener(new View.OnClickListener() {
 			
-			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				switch(m_nActivedList)
@@ -157,7 +155,9 @@ public class DetailUserActivity extends Activity implements SensorListener{
 					UpdateHistoryList();
 					break;
 					
-				case 1:
+				case 1:					
+					msBookControl(m_strTel, false);   // 문자 내역을 지우고
+					UpdateSMSList();					
 					break;				
 				}
 			}
@@ -186,7 +186,12 @@ public class DetailUserActivity extends Activity implements SensorListener{
 		m_myHistoryAdapter.notifyDataSetChanged();
 	}
 	
-	
+	void UpdateSMSList()
+	{
+		ClearHistoryList();
+		msBookControl(m_strTel, true);
+		m_myHistoryAdapter.notifyDataSetChanged();
+	}
 	
 	public void onAccuracyChanged(int sensor, int accuracy) {
 		// TODO Auto-generated method stub
@@ -280,9 +285,6 @@ public class DetailUserActivity extends Activity implements SensorListener{
                         callcount++;
                         Log.i("call history[", sb.toString());
                 	}else{
-                		
-                		
-                		
                 		getBaseContext().getContentResolver().delete(CallLog.Calls.CONTENT_URI, " number = '"+phoneNumber+"'",null);
                         curCallLog.moveToNext();
                         callcount++;
@@ -314,6 +316,57 @@ public class DetailUserActivity extends Activity implements SensorListener{
 	        
 	        return cursor;
 	    }
+	    
+	    
+	    
+	    
+	    public void msBookControl(String phoneNumber, boolean type){
+	    	
+
+	    		
+	            Uri allMessage = Uri.parse("content://sms/");  
+	            Cursor cur = this.getContentResolver().query(allMessage, null, " address = '"+phoneNumber+"'" , null, null);
+	            int count = cur.getCount();
+	            Log.i( "AAAAAA" , "SMS count = " + count);
+	            String row = "";
+	            String msg = "";
+	            String date = "";
+	            String protocol = "";
+	            while (cur.moveToNext()) {
+	            	
+	            	
+	            if(type){ // 문자 조회이면
+	                row = cur.getString(cur.getColumnIndex("address"));
+	                msg = cur.getString(cur.getColumnIndex("body"));
+	                date = cur.getString(cur.getColumnIndex("date"));
+	                protocol = cur.getString(cur.getColumnIndex("protocol"));
+	                // Logger.d( TAG , "SMS PROTOCOL = " + protocol);  
+	                
+	                String type2 = "";
+	                if (protocol == MESSAGE_TYPE_SENT) type2 = "sent";
+	                else if (protocol == MESSAGE_TYPE_INBOX) type2 = "receive";
+	                else if (protocol == MESSAGE_TYPE_CONVERSATIONS) type2 = "conversations"; 
+	                else if (protocol == null) type2 = "send"; 
+	
+	                Log.i( "AAAAAA" , "SMS Phone: " + row + " / Mesg: " + msg + " / Type: " + type + " / Date: " + timeToString(Long.valueOf(date)));
+	                
+	                // Insert the item to the array referenced to the history-list
+                    MyHistoryItem historyItem = new MyHistoryItem();
+                    historyItem.nCallType = 3;	// 문자이미지.
+                    historyItem.strHistory = timeToString(Long.valueOf(cur.getColumnIndex("date")));
+                    m_arryHistoryItems.add(historyItem);
+	                
+	            }else{  // 삭제이면 
+	            	getBaseContext().getContentResolver().delete(allMessage,  " address = '"+phoneNumber+"'",  null );
+	            }
+            }
+	    }
+	    
+	    
+	    
+	    
+	    
+	    
 	    
 	    // MyHistoryItem
 	    class MyHistoryItem
