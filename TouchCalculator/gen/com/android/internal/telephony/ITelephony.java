@@ -1,6 +1,6 @@
 /*
  * This file is auto-generated.  DO NOT MODIFY.
- * Original file: C:\\Users\\jang\\workspace\\TouchCalc\\TouchCalc\\TouchCalculator\\src\\com\\android\\internal\\telephony\\ITelephony.aidl
+ * Original file: C:\\Users\\hanyang\\TouchCalc\\TouchCalculator\\src\\com\\android\\internal\\telephony\\ITelephony.aidl
  */
 package com.android.internal.telephony;
 /**
