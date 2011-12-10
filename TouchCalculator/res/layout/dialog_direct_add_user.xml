@@ -21,7 +21,7 @@
 			android:layout_marginRight="20dp" android:id="@+id/editTel"></EditText>
 	</LinearLayout>
 	<LinearLayout android:id="@+id/linearLayout3"
-		android:layout_height="wrap_content" android:gravity="center" android:layout_marginTop="10dp" android:layout_width="300dp">
+		android:layout_height="wrap_content" android:gravity="center" android:layout_marginTop="10dp" android:layout_width="300dp" android:layout_marginBottom="15dp">
 		<Button android:text="저장" android:id="@+id/btnSave"
 			android:layout_height="wrap_content" android:layout_width="100dp"></Button>
 		<Button android:text="취소" android:id="@+id/btnCancel"

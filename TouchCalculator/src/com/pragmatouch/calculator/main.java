@@ -14,6 +14,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -63,6 +64,7 @@ public class main extends Activity {
 		// Get reference to the user input TextView
 		userInputText = (TextView) findViewById(R.id.txtInput);
 		userInputText.setText("0");
+		userInputText.setTextColor(Color.WHITE);		
 
 		memoryStatText = (TextView) findViewById(R.id.txtMemory);
 		memoryStatText.setText("");
