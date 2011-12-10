@@ -1,6 +1,7 @@
 package com.pragmatouch.calculator;
 
 import java.lang.reflect.Method;
+import java.util.logging.Logger;
 
 import com.android.internal.telephony.ITelephony;
 
@@ -11,7 +12,11 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.media.AudioManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.CallLog;
+import android.provider.ContactsContract;
+import android.provider.ContactsContract.Contacts;
 import android.telephony.CellLocation;
 import android.telephony.PhoneStateListener;
 import android.telephony.ServiceState;
@@ -69,9 +74,6 @@ public class CustomBroadcastReceiver extends BroadcastReceiver {
 			
 			AudioManager  aManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
 			int mode = aManager.getRingerMode();
-			  
-			
-			
 
 			// 수신 거부일 경우 	
 			if (notReceive.endsWith("1")){
@@ -93,6 +95,17 @@ public class CustomBroadcastReceiver extends BroadcastReceiver {
 				
 				}
 			}
+			
+			
+			Log.i("zzzzzzzzzzzzzzzzzzzzz", "zzzzzzzzzzzzzzzzz");  // 수신거부 세팅
+			
+
+    
+
+
+			
+			
+     	   Log.i("YYYYYYYYYYYYYYYYYYYYY", "YYYYYYYYYYYYYYYYYYYYYYY");  // 수신거부 세팅
 
 				
 
@@ -100,6 +113,10 @@ public class CustomBroadcastReceiver extends BroadcastReceiver {
 		}
 
 	}
+	
+	
+ 
+
 
 
 	

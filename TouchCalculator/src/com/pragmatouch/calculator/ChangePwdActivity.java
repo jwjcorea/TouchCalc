@@ -38,7 +38,6 @@ public class ChangePwdActivity extends Activity implements SensorListener{
 	
 	public InputFilter filterNum = new InputFilter() {
 		
-		@Override
 		public CharSequence filter(CharSequence source, int start, int end,
 				Spanned dest, int dstart, int dend) {
 			// TODO Auto-generated method stub
