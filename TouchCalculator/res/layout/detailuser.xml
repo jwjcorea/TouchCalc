@@ -47,8 +47,8 @@
 
 	        <Button
 	            android:id="@+id/btnTel"
-	            android:layout_width="35dp"
-	            android:layout_height="35dp"
+	            android:layout_width="40dp"
+	            android:layout_height="40dp"
 	            android:background="@drawable/sym_action_call"
 	            android:clickable="true"
 	            android:textSize="15dp" >
@@ -56,8 +56,8 @@
 
 	        <Button
 	            android:id="@+id/btnMessage"
-	            android:layout_width="35dp"
-	            android:layout_height="35dp"
+	            android:layout_width="40dp"
+	            android:layout_height="40dp"
 	            android:layout_marginLeft="10dp"
 	            android:background="@drawable/sym_action_email"
 	            android:clickable="true"
@@ -69,9 +69,9 @@
 	<LinearLayout android:id="@+id/linearLayout4" android:gravity="center"
 		android:layout_height="wrap_content" android:layout_width="match_parent" android:layout_marginTop="5dp">
 		<Button android:layout_width="wrap_content"
-			android:text="통화내역" android:width="150dp" android:layout_height="40dp" android:id="@+id/btnShowTelList" android:textSize="15dp"></Button>
+			android:text="통화내역" android:width="150dp" android:id="@+id/btnShowTelList" android:textSize="15dp" android:layout_height="match_parent"></Button>
 		<Button android:layout_width="wrap_content"
-			android:text="문자내역" android:width="150dp" android:layout_height="40dp" android:id="@+id/btnShowMsgList" android:textSize="15dp"></Button>
+			android:text="문자내역" android:width="150dp" android:layout_height="match_parent" android:id="@+id/btnShowMsgList" android:textSize="15dp"></Button>
 	</LinearLayout>
 
 	<ListView
@@ -86,7 +86,7 @@
 	<LinearLayout
 	    android:id="@+id/linearLayout5"
 	    android:layout_width="match_parent"
-	    android:layout_height="55dp"
+	    android:layout_height="60dp"
 	    android:background="@color/darkgrey"
 	    android:gravity="center_vertical"
 	    android:orientation="vertical" >
@@ -94,10 +94,10 @@
 		<Button
 		    android:id="@+id/btnDelList"
 		    android:layout_width="match_parent"
-		    android:layout_height="40dp"
+		    android:layout_height="wrap_content"
 		    android:layout_marginLeft="5dp"
 		    android:layout_marginRight="5dp"
-		    android:text="목록 전체 삭제"
+		    android:text="내역 전체 삭제"
 		    android:textSize="15dp" />
 
 	</LinearLayout>

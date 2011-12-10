@@ -2,6 +2,8 @@ package com.pragmatouch.calculator;
 
 import android.widget.*;
 import android.content.*;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.view.*;
 import android.view.View.OnClickListener;
 
@@ -40,6 +42,8 @@ public class KeypadAdapter extends BaseAdapter {
 
 			btn = new Button(mContext);
 			KeypadButton keypadButton = mButtons[position];
+			btn.setTextColor(Color.WHITE);
+			btn.setTypeface(null, Typeface.BOLD);
 			
 			switch(keypadButton.mCategory)
 			{
@@ -47,26 +51,32 @@ public class KeypadAdapter extends BaseAdapter {
 				btn.setBackgroundResource(R.drawable.keypadmembuffer1);
 				break;	
 			case CLEAR:
-				btn.setBackgroundResource(R.drawable.keypadclear1);
+				//btn.setBackgroundResource(R.drawable.keypadclear1);
+				btn.setBackgroundResource(R.drawable.keypadmembuffer1);
 				break;	
 			case NUMBER:
+				//btn.setBackgroundResource(R.drawable.keypad1);
 				btn.setBackgroundResource(R.drawable.keypad1);
 				break;
-			case OPERATOR:
-				
-				btn.setBackgroundResource(R.drawable.keypadop1);
+			case OPERATOR:				
+				//btn.setBackgroundResource(R.drawable.keypadop1);
+				btn.setBackgroundResource(R.drawable.keypadmembuffer1);
 				break;
 			case OTHER:
-				btn.setBackgroundResource(R.drawable.keypadother1);
+				//btn.setBackgroundResource(R.drawable.keypadother1);
+				btn.setBackgroundResource(R.drawable.keypadmembuffer1);
 				break;
 			case RESULT:
-				btn.setBackgroundResource(R.drawable.keypadresult1);
+				//btn.setBackgroundResource(R.drawable.keypadresult1);
+				btn.setBackgroundResource(R.drawable.keypadmembuffer1);
 				break;
 			case DUMMY:
-				btn.setBackgroundResource(R.drawable.appvertical1);
+				//btn.setBackgroundResource(R.drawable.appvertical1);
+				btn.setBackgroundResource(R.drawable.keypad1);
 				break;
 			default:
-				btn.setBackgroundResource(R.drawable.keypad1);
+				//btn.setBackgroundResource(R.drawable.keypad1);
+				btn.setBackgroundResource(R.drawable.keypadmembuffer1);
 				break;
 			}
 			// Set OnClickListener of the button to mOnButtonClick

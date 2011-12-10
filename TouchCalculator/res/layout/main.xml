@@ -3,51 +3,57 @@
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@drawable/appvertical1"
-    >
-	
-	<TextView  
-	    android:id="@+id/txtStack"
-	    android:layout_width="fill_parent" 
-	    android:layout_height="wrap_content" 
-	   	android:textSize="15sp"
-	    android:gravity="right"
-	    android:background="@drawable/stackview1"
-	    android:layout_marginTop = "15sp"
-	    android:layout_marginLeft = "5sp"
-	    android:layout_marginRight = "5sp"
-    	android:textColor="@color/darkgrey"/>
-   
+    android:background="@drawable/appvertical1">
 
-    <TextView  
-    	android:id="@+id/txtInput"
-    	android:layout_width="fill_parent" 
-    	android:layout_height="wrap_content" 
-    	android:textSize="35sp"
-    	android:gravity="right"
-    	android:background="@drawable/inputview1"
-    	android:textColor="@color/black"
-    	android:layout_marginLeft = "5sp"
-   		android:layout_marginRight = "5sp"/>
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" android:background="@drawable/inputview1" android:layout_marginTop="20dp" android:layout_marginRight="10dp" android:layout_marginLeft="10dp">
 
+        <TextView
+            android:id="@+id/txtStack"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="15dp"
+            android:gravity="right"
+            android:textSize="15sp" />
 
-    <TextView  
-    	android:id="@+id/txtMemory"
-    	android:layout_width="fill_parent" 
-    	android:layout_height="wrap_content" 
-    	android:textSize="15sp"
-    	android:textColor="@color/lightyellow"
-    	android:gravity="left"
-        android:layout_marginLeft = "5sp"
-   		android:layout_marginRight = "5sp"/>
-   		
-<GridView xmlns:android="http://schemas.android.com/apk/res/android" 
-    android:id="@+id/grdButtons"
-    android:layout_width="fill_parent" 
-    android:layout_height="fill_parent"
-    android:stretchMode="columnWidth"
-    android:gravity="center" android:columnWidth="90dp" android:numColumns="5" android:verticalSpacing="10dp" android:horizontalSpacing="10dp"/>
-  
-    
+        <TextView
+            android:id="@+id/txtInput"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5sp"
+            android:layout_marginRight="5sp"
+            android:gravity="right"
+            android:text="0"
+            android:textSize="35sp" />
+
+        <TextView
+            android:id="@+id/txtMemory"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5sp"
+            android:layout_marginRight="5sp"
+            android:gravity="left"
+            android:textColor="@color/lightyellow"
+            android:textSize="15sp" />
+    </LinearLayout>
+
+    <GridView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/grdButtons"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginTop="20dp"
+        android:columnWidth="90dp"
+        android:gravity="center"
+        android:horizontalSpacing="10dp"
+        android:numColumns="5"
+        android:stretchMode="columnWidth"
+        android:verticalSpacing="10dp" >
+    </GridView>
 
 </LinearLayout>

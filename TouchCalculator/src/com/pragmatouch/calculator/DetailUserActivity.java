@@ -9,6 +9,7 @@ import com.pragmatouch.calculator.SecretManager.MyListAdapter;
 import com.pragmatouch.calculator.SecretManager.MyPopupListAdapter.ViewHolder;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -21,14 +22,19 @@ import android.provider.CallLog;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.Contacts;
 import android.provider.ContactsContract.RawContacts;
+import android.text.InputFilter;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TabHost;
@@ -92,6 +98,7 @@ public class DetailUserActivity extends Activity implements SensorListener{
 		m_arryHistoryItems = new ArrayList<MyHistoryItem>();
 		m_myHistoryAdapter = new MyHistoryListAdapter(this, R.layout.listitem_history, m_arryHistoryItems);
 		m_historyList.setAdapter(m_myHistoryAdapter);
+		m_historyList.setOnItemClickListener(mItemClickListener);
 		
 		// * Init
 		// 1. update list
@@ -353,7 +360,7 @@ public class DetailUserActivity extends Activity implements SensorListener{
 	                // Insert the item to the array referenced to the history-list
                     MyHistoryItem historyItem = new MyHistoryItem();
                     historyItem.nCallType = 3;	// 문자이미지.
-                    historyItem.strHistory = timeToString(Long.valueOf(cur.getColumnIndex("date")));
+                    historyItem.strHistory = msg;
                     m_arryHistoryItems.add(historyItem);
 	                
 	            }else{  // 삭제이면 
@@ -454,6 +461,56 @@ public class DetailUserActivity extends Activity implements SensorListener{
 		protected class ViewHolder{
 			protected ImageView imgHistory;
 			protected TextView txtHistory;
+		}
+	}
+	    
+    AdapterView.OnItemClickListener mItemClickListener = new AdapterView.OnItemClickListener() {
+
+		
+		public void onItemClick(AdapterView parnet, View view, int position, long id) {
+			// TODO Auto-generated method stub
+			
+			MyHistoryItem item = m_arryHistoryItems.get(position);
+			if(item.strHistory.equals("") == false)
+			{
+				SMSDialog smsDlg = new SMSDialog(DetailUserActivity.this);
+				smsDlg.setText(item.strHistory);				
+				smsDlg.show();
+			}
+		}
+	};
+	
+	public class SMSDialog extends Dialog {
+		Button btnExit;
+		TextView txtSMS;
+		
+		public SMSDialog(Context context) {
+			super(context);			
+			
+			requestWindowFeature(Window.FEATURE_NO_TITLE);
+				
+			// * set the dialog			
+			setContentView(R.layout.dialog_sms);
+			
+			
+			// * get the button
+			btnExit = (Button) findViewById(R.id.btnExit);
+			txtSMS = (TextView) findViewById(R.id.txtSMS);
+
+			// * click 
+			btnExit.setOnClickListener(new View.OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					dismiss();
+				}
+			});
+		}
+		
+		void setText(String strSMS)
+		{
+			// * insert the content to the textview
+			txtSMS.setText(strSMS);
 		}
 	}
 }

@@ -7,7 +7,7 @@
     <LinearLayout android:layout_height="wrap_content" android:orientation="vertical" android:id="@+id/linearLayout2" android:layout_width="281dp">
         <ListView android:layout_width="wrap_content" android:layout_height="280dp" android:id="@+id/contactList"></ListView>
     </LinearLayout>
-    <LinearLayout android:layout_height="wrap_content" android:id="@+id/linearLayout1" android:layout_width="280dp" android:gravity="center_vertical|center_horizontal" android:layout_marginTop="10dp">
+    <LinearLayout android:layout_height="wrap_content" android:id="@+id/linearLayout1" android:layout_width="280dp" android:gravity="center_vertical|center_horizontal" android:layout_marginTop="10dp" android:layout_marginBottom="15dp">
         <Button android:layout_height="wrap_content" android:id="@+id/btnSave" android:layout_width="80dp" android:text="확인"></Button>
         <Button android:layout_height="wrap_content" android:id="@+id/btnCancel" android:layout_width="80dp" android:text="취소"></Button>
     </LinearLayout>
