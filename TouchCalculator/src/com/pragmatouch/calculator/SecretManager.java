@@ -20,6 +20,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.Contacts;
+import android.text.InputFilter;
+import android.text.InputType;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -488,6 +490,7 @@ public class SecretManager extends Activity implements SensorListener {
 								// get the value
 								String strName = tmpDlg.m_strName;
 								String strTel = tmpDlg.m_strTel;
+								strTel.replaceAll("-", "");
 								
 								// Insert info to DB
 								SQLiteOpenHelper dbHelper = new DBManager(SecretManager.this, "userList.db", null, 1);		
@@ -550,6 +553,8 @@ public class SecretManager extends Activity implements SensorListener {
 			Button btnCancel = (Button) findViewById(R.id.btnCancel);
 			m_editName = (EditText) findViewById(R.id.editName);
 			m_editTel = (EditText) findViewById(R.id.editTel);
+			m_editTel.setInputType(InputType.TYPE_CLASS_NUMBER);			
+			m_editTel.setFilters(new InputFilter[] { new InputFilter.LengthFilter(15)}); // limit the input
 
 			btnSave.setOnClickListener(new View.OnClickListener() {
 
@@ -613,11 +618,11 @@ public class SecretManager extends Activity implements SensorListener {
 						{							
 							ContentValues cv = new ContentValues();
 							cv.put("name", m_popupContactItem.get(i).strName);
-							cv.put("tel", m_popupContactItem.get(i).strTel);
+							cv.put("tel", m_popupContactItem.get(i).strTel.replaceAll("-", ""));
 							cv.put("mute", 0);
 							cv.put("noreceive", 0);
 							cv.put("sync", 0);
-							db.insert("userList", null, cv);							
+							db.insert("userList", null, cv);	
 						}
 					}				
 					
@@ -693,9 +698,8 @@ public class SecretManager extends Activity implements SensorListener {
 				// 사용자 이름과 폰 번호를 다 얻었다. 채워라
 				for (i = 0; i < nCnt; ++i) {
 					int nCntNum = m_UserInfo[i].number.size();
-					for (int j = 0; j < nCntNum; ++j) {
-						
-						MyItem item = new MyItem(m_UserInfo[i].strName, m_UserInfo[i].number.get(j), 0, 0, 0);
+					for (int j = 0; j < nCntNum; ++j) {						
+						MyItem item = new MyItem(m_UserInfo[i].strName, m_UserInfo[i].number.get(j).replaceAll("-", ""), 0, 0, 0);
 						m_popupContactItem.add(item);
 					}
 				}
@@ -746,6 +750,8 @@ public class SecretManager extends Activity implements SensorListener {
 			
 			editName.setText(m_strName);
 			editTel.setText(m_strTel);
+			editTel.setInputType(InputType.TYPE_CLASS_NUMBER);			
+			editTel.setFilters(new InputFilter[] { new InputFilter.LengthFilter(15)}); // limit the input				
 		}
 		
 		public ModifyUserDialog(Context context) {
