@@ -21,6 +21,7 @@ import android.provider.CallLog;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.Contacts;
 import android.provider.ContactsContract.RawContacts;
+import android.telephony.gsm.SmsMessage;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -53,6 +54,8 @@ public class DetailUserActivity extends Activity implements SensorListener{
 	long lastUpdate;
 	float x,y,z,last_x,last_y,last_z;
 	
+	
+	String hardWare ="";
 	
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -138,7 +141,21 @@ public class DetailUserActivity extends Activity implements SensorListener{
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				
-				UpdateSMSList();
+				
+				// 갤럭시 S 이면 
+				if(isGalaxyS()){
+					Log.i("INFO",  "This is GalaxyS");
+					hardWare = "GALAXYS";
+					UpdateSMSListGalaxyS();
+				}
+				else{
+					Log.i("INFO",  "This is not GalaxyS");
+					UpdateSMSList();
+				}
+				
+				
+				
+				
 				m_nActivedList = 1;	// If the value is 0, the message history has showed
 			}
 		});
@@ -155,10 +172,20 @@ public class DetailUserActivity extends Activity implements SensorListener{
 					UpdateHistoryList();
 					break;
 					
-				case 1:					
-					msBookControl(m_strTel, false);   // 문자 내역을 지우고
-					UpdateSMSList();					
-					break;				
+				case 1:
+					
+					if(hardWare.equals("GALAXYS")){
+						msBookControlGalaxyS(m_strTel, false);   // 문자 내역을 지우고
+						UpdateSMSListGalaxyS();					
+						break;	
+					}
+					else {
+						msBookControl(m_strTel, false);   // 문자 내역을 지우고
+						UpdateSMSList();					
+						break;	
+						
+					}
+			
 				}
 			}
 		});
@@ -190,6 +217,13 @@ public class DetailUserActivity extends Activity implements SensorListener{
 	{
 		ClearHistoryList();
 		msBookControl(m_strTel, true);
+		m_myHistoryAdapter.notifyDataSetChanged();
+	}
+	
+	void UpdateSMSListGalaxyS()
+	{
+		ClearHistoryList();
+		msBookControlGalaxyS(m_strTel, true);
 		m_myHistoryAdapter.notifyDataSetChanged();
 	}
 	
@@ -321,9 +355,7 @@ public class DetailUserActivity extends Activity implements SensorListener{
 	    
 	    
 	    public void msBookControl(String phoneNumber, boolean type){
-	    	
 
-	    		
 	            Uri allMessage = Uri.parse("content://sms/");  
 	            Cursor cur = this.getContentResolver().query(allMessage, null, " address = '"+phoneNumber+"'" , null, null);
 	            int count = cur.getCount();
@@ -361,6 +393,128 @@ public class DetailUserActivity extends Activity implements SensorListener{
 	            }
             }
 	    }
+	    
+	    
+	    public boolean isGalaxyS(){
+	    	
+            Uri allMessage = Uri.parse("content://com.sec.mms.provider/message");  
+            Cursor cur = this.getContentResolver().query(allMessage, null, null , null, null);
+            
+            if(cur == null){
+            	
+            	return false;
+            }
+            
+            cur.close();
+
+	    	return true;
+	    }
+	    
+	    
+	    
+	    
+	    public void msBookControlGalaxyS(String phoneNumber, boolean type){
+	    	
+	    	//phoneNumber = parserPhoneNumber(phoneNumber);
+
+            Uri allMessage = Uri.parse("content://com.sec.mms.provider/message");  
+            Cursor cur = this.getContentResolver().query(allMessage, null, " MDN1st = '"+phoneNumber+"' OR MDN2nd ='"+phoneNumber+"'" , null, null);
+            int count = cur.getCount();
+            Log.i( "AAAAAA" , "SMS count = " + count);
+            Long  ldate;
+            String row = "";
+            String msg = "";
+            String date = "";
+            String protocol = "";
+            while (cur.moveToNext()) {
+            	
+            	
+            if(type){ // 문자 조회이면
+//                row = cur.getString(cur.getColumnIndex("address"));
+//                msg = cur.getString(cur.getColumnIndex("body"));
+//                date = cur.getString(cur.getColumnIndex("date"));
+//                protocol = cur.getString(cur.getColumnIndex("protocol"));
+                // Logger.d( TAG , "SMS PROTOCOL = " + protocol);  
+            	
+            	ldate = cur.getLong(1);
+
+                
+//                String type2 = "";
+//                if (protocol == MESSAGE_TYPE_SENT) type2 = "sent";
+//                else if (protocol == MESSAGE_TYPE_INBOX) type2 = "receive";
+//                else if (protocol == MESSAGE_TYPE_CONVERSATIONS) type2 = "conversations"; 
+//                else if (protocol == null) type2 = "send"; 
+
+//               Log.i( "AAAAAA" , "SMS Phone: " + row + " / Mesg: " + msg + " / Type: " + type + " / Date: " + timeToString(Long.valueOf(date)));
+                
+                // Insert the item to the array referenced to the history-list
+                
+            	Log.i("AAAAAAA", timeToString(Long.valueOf(ldate)));
+                
+                
+                  MyHistoryItem historyItem = new MyHistoryItem();
+                  historyItem.nCallType = 3;	// 문자이미지.
+                  historyItem.strHistory =timeToString(Long.valueOf(ldate));
+                  m_arryHistoryItems.add(historyItem);
+                
+            }else{  // 삭제이면 
+            	getBaseContext().getContentResolver().delete(allMessage,   " MDN1st = '"+phoneNumber+"' OR MDN2nd ='"+phoneNumber+"'",  null );
+            }
+        }
+
+	}
+	    
+	public static String parserPhoneNumber(String phone){
+		
+		int length = phone.length();
+		String customer;
+		
+		if(length == 11){
+			
+			customer = phone.substring(0,3);
+			customer = customer + "-";
+			customer = customer + phone.substring(3,7);
+			customer = customer + "-";
+			customer = customer + phone.substring(7,11);
+			return customer;
+		}
+		
+		if(length == 10){
+			customer = phone.substring(0,3);
+			customer = customer + "-";
+			customer = customer + phone.substring(3,6);
+			customer = customer + "-";
+			customer = customer + phone.substring(6,10);
+			return customer;
+		}
+		
+		if(length == 10){
+			customer = phone.substring(0,3);
+			customer = customer + "-";
+			customer = customer + phone.substring(3,6);
+			customer = customer + "-";
+			customer = customer + phone.substring(6,10);
+			return customer;
+		}
+		
+		if(length == 9){
+			customer = phone.substring(0,2);
+			customer = customer + "-";
+			customer = customer + phone.substring(2,5);
+			customer = customer + "-";
+			customer = customer + phone.substring(5,9);
+			return customer;
+		}
+		
+		if(length == 8){
+			customer = phone.substring(0,4);
+			customer = customer + "-";
+			customer = customer + phone.substring(4,8);
+			return customer;
+		}
+		
+		return "";
+	}
 	    
 	    
 	    
