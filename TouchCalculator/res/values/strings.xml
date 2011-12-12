@@ -3,7 +3,7 @@
     <string name="app_name">iCalculator</string>
     <string name="cur_pwd">현재 비밀번호</string>
     <string name="new_pwd">새로운 비밀번호</string>
-    <string name="new_pwd_sub1">   영문,숫자 4~10자까지 사용(혼용가능)</string>
+    <string name="new_pwd_sub1">   숫자 4자까지 사용</string>
     <string name="confirm_pwd">비밀번호 확인</string>
     <string name="confirm_pwd_sub1">   재확인을 위해 입력한 비밀번호 다시 입력</string>
     <string name="editbox_text">비밀번호 입력</string>
