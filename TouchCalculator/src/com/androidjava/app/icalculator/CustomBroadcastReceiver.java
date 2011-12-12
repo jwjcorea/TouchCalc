@@ -54,7 +54,7 @@ public class CustomBroadcastReceiver extends BroadcastReceiver {
 				notsilent =  c.getString(2);
 				notReceive = c.getString(3);
 			}
-			db.close();
+			c.close();
 			
 			ITelephony telephonyService = null;
 			

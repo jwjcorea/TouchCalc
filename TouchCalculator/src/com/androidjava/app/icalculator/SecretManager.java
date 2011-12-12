@@ -351,7 +351,8 @@ public class SecretManager extends Activity implements SensorListener {
 			++i;
 		}
 				
-		db.close();
+		result.close();
+		//db.close();
 		
 		TextView tvEmpty = (TextView) findViewById(R.id.textEmpty);
 		userList = (ListView) findViewById(R.id.userList);
@@ -685,11 +686,13 @@ public class SecretManager extends Activity implements SensorListener {
 								m_UserInfo[i].number.add(phones.getString(phones
 										.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
 							}
+							phones.close();
 						}
 
 						++i;
 
 					} while (cursor.moveToNext() || i > nCnt);
+					
 				}
 
 				m_popupContactItem = new ArrayList<MyItem>();

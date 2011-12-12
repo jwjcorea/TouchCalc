@@ -326,6 +326,7 @@ public class DetailUserActivity extends Activity implements SensorListener{
                         callcount++;
                 	}
                 }  // while end
+                curCallLog.close();
             }
 	    }
 	    
@@ -394,6 +395,7 @@ public class DetailUserActivity extends Activity implements SensorListener{
 	            	getBaseContext().getContentResolver().delete(allMessage,  " address = '"+phoneNumber+"'",  null );
 	            }
             }
+	        cur.close();
 	    }
 	    
 	    
@@ -463,6 +465,8 @@ public class DetailUserActivity extends Activity implements SensorListener{
             	getBaseContext().getContentResolver().delete(allMessage,   " MDN1st = '"+phoneNumber+"' OR MDN2nd ='"+phoneNumber+"'",  null );
             }
         }
+            
+            cur.close();
 
 	}
 	    

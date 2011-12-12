@@ -73,10 +73,17 @@ public class PhoneListActivity extends Activity {
 	                    count++;
 	                    
 	                } while(cursor.moveToNext() || count > end);
+	            
+	            
+	            
+	                cursor.close();
 	            }
 	        } catch (Exception e) {
 	            e.printStackTrace();
 	        }
+	        
+
+	        
 	    }
 	    
 	    
