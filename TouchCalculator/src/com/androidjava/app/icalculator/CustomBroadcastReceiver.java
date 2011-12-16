@@ -68,7 +68,7 @@ public class CustomBroadcastReceiver extends BroadcastReceiver {
 				telephonyService = (ITelephony)m.invoke(tm); 
 
 			}catch(Exception e){
-				//Log.i("ERROR", e.toString());
+				Log.e(this.toString() + " CustomBroadcastReceiver", e.toString());
 			}
 			
 			
@@ -77,10 +77,10 @@ public class CustomBroadcastReceiver extends BroadcastReceiver {
 
 			// 수신 거부일 경우 	
 			if (notReceive.endsWith("1")){
-				Log.i("수신거부 세팅입니다.", incommingNumber);  // 수신거부 세팅
+				//Log.i("수신거부 세팅입니다.", incommingNumber);  // 수신거부 세팅
 
 				aManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
-				DPhoneStateListener phoneStateListenerD = new DPhoneStateListener(tm, aManager, mode, telephonyService);
+				DPhoneStateListener phoneStateListenerD = new DPhoneStateListener(tm, aManager, mode, telephonyService, context);
 				tm.listen(phoneStateListenerD, phoneStateListenerD.LISTEN_CALL_STATE);
 				       
 				
@@ -88,27 +88,13 @@ public class CustomBroadcastReceiver extends BroadcastReceiver {
 
 				if(notsilent.equals("1")){
 
-					Log.i("무음 세팅입니다.", incommingNumber);  // 무음 세팅
+					//Log.i("무음 세팅입니다.", incommingNumber);  // 무음 세팅
 					aManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
-					MPhoneStateListener phoneStateListenerM = new MPhoneStateListener(aManager,  mode, telephonyService);
+					MPhoneStateListener phoneStateListenerM = new MPhoneStateListener(aManager,  mode, telephonyService,  context);
 					tm.listen(phoneStateListenerM, phoneStateListenerM.LISTEN_CALL_STATE);
 				
 				}
 			}
-			
-			
-			Log.i("zzzzzzzzzzzzzzzzzzzzz", "zzzzzzzzzzzzzzzzz");  // 수신거부 세팅
-			
-
-    
-
-
-			
-			
-     	   Log.i("YYYYYYYYYYYYYYYYYYYYY", "YYYYYYYYYYYYYYYYYYYYYYY");  // 수신거부 세팅
-
-				
-
 
 		}
 

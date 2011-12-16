@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-	package="com.androidjava.app.icalculator" android:versionCode="5"
-	android:versionName="5.0">
+	package="com.androidjava.app.icalculator" android:versionCode="7"
+	android:versionName="7">
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
 	<uses-permission android:name="android.permission.READ_CONTACTS"></uses-permission>
 	<uses-permission android:name="android.permission.WRITE_CONTACTS"></uses-permission>
@@ -11,11 +11,8 @@
     <uses-permission android:name="android.permission.WRITE_CONTACTS"></uses-permission>
     <uses-permission android:name="android.permission.READ_SMS"></uses-permission>
     <uses-permission android:name="android.permission.WRITE_SMS"></uses-permission>
+    <uses-permission android:name="android.permission.MODIFY_PHONE_STATE"></uses-permission>
 
-
-        
-
-    
 	<application android:icon="@drawable/icon" android:label="@string/app_name">
 		<activity android:name=".main" android:label="@string/app_name" android:screenOrientation="portrait">
 			<intent-filter>

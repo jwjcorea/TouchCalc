@@ -268,66 +268,57 @@ public class DetailUserActivity extends Activity implements SensorListener{
 
 	    public void phoneBookControl(String phoneNumber, boolean type) {
 	    	
-            int callcount = 0;
-            String callname = "";
-            int nCallType = 0;
-            String calllog = "";
-	    	
-	    	Cursor curCallLog = getCallHistoryCursor(this, phoneNumber);
-	    		    	
-            if (curCallLog.moveToFirst() && curCallLog.getCount() > 0) {
-                while (curCallLog.isAfterLast() == false) {
-                	
-                	StringBuffer sb = new StringBuffer();
+	    	try{
+	            int callcount = 0;
+	            String callname = "";
+	            int nCallType = 0;
+	            String calllog = "";
+		    	
+		    	Cursor curCallLog = getCallHistoryCursor(this, phoneNumber);
+	            if (curCallLog.moveToFirst() && curCallLog.getCount() > 0) {
+	            	if(type){ // Call Search
+	                    while (curCallLog.isAfterLast() == false) {
+	                        if (curCallLog.getString(curCallLog
+	                                .getColumnIndex(CallLog.Calls.TYPE)).equals(MESSAGE_TYPE_INBOX)){
+	                        	nCallType = 0; //"수신";
+	                        }
+	                        else if (curCallLog.getString(curCallLog
+	                                .getColumnIndex(CallLog.Calls.TYPE)).equals(MESSAGE_TYPE_SENT)){
+	                        	nCallType = 1; //"발신";                    
+	                        }
+	                        else if (curCallLog.getString(curCallLog
+	                                .getColumnIndex(CallLog.Calls.TYPE)).equals(MESSAGE_TYPE_CONVERSATIONS)){
+	                        	nCallType = 2; //"부재중";                    
+	                        }
+	                        
+	                        if (curCallLog.getString(curCallLog
+	                                .getColumnIndex(CallLog.Calls.CACHED_NAME)) == null) {
+	                            callname = "NoName";
+	                        }
+	                        else {
+	                            callname = curCallLog.getString(curCallLog
+	                                    .getColumnIndex(CallLog.Calls.CACHED_NAME));
+	                        }
+	                                               
+	                        // Insert the item to the array referenced to the history-list
+	                        MyHistoryItem historyItem = new MyHistoryItem();
+	                        historyItem.nCallType = nCallType;
+	                        historyItem.strHistory = timeToString(curCallLog.getLong(curCallLog.getColumnIndex(CallLog.Calls.DATE)));
+	                        m_arryHistoryItems.add(historyItem);
+	            
+	                        curCallLog.moveToNext();
+	                        callcount++;
 
-                	
-                	if(type){
-                        if (curCallLog.getString(curCallLog
-                                .getColumnIndex(CallLog.Calls.TYPE)).equals(MESSAGE_TYPE_INBOX)){
-                        	nCallType = 0; //"수신";
-                        }
-                        else if (curCallLog.getString(curCallLog
-                                .getColumnIndex(CallLog.Calls.TYPE)).equals(MESSAGE_TYPE_SENT)){
-                        	nCallType = 1; //"발신";                    
-                        }
-                        else if (curCallLog.getString(curCallLog
-                                .getColumnIndex(CallLog.Calls.TYPE)).equals(MESSAGE_TYPE_CONVERSATIONS)){
-                        	nCallType = 2; //"부재중";                    
-                        }
-                        
-                        if (curCallLog.getString(curCallLog
-                                .getColumnIndex(CallLog.Calls.CACHED_NAME)) == null) {
-                            callname = "NoName";
-                        }
-                        else {
-                            callname = curCallLog.getString(curCallLog
-                                    .getColumnIndex(CallLog.Calls.CACHED_NAME));
-                        }
-                                               
-                        // Insert the item to the array referenced to the history-list
-                        MyHistoryItem historyItem = new MyHistoryItem();
-                        historyItem.nCallType = nCallType;
-                        historyItem.strHistory = timeToString(curCallLog.getLong(curCallLog.getColumnIndex(CallLog.Calls.DATE)));
-                        m_arryHistoryItems.add(historyItem);
-                        
-                        //sb.append(timeToString(curCallLog.getLong(curCallLog
-                        //      .getColumnIndex(CallLog.Calls.DATE))));
-                        //sb.append("\t").append(calltype);
-                        //sb.append("\t").append(callname);
-                        //sb.append("\t").append(curCallLog.getString(curCallLog
-                        //        .getColumnIndex(CallLog.Calls.NUMBER)));
-                    		            
-                        curCallLog.moveToNext();
-                        callcount++;
-                        Log.i("call history[", sb.toString());
-                	}else{
-                		getBaseContext().getContentResolver().delete(CallLog.Calls.CONTENT_URI, " number = '"+phoneNumber+"'",null);
-                        curCallLog.moveToNext();
-                        callcount++;
-                	}
-                }  // while end
-                curCallLog.close();
-            }
+	                    }  // while end
+	                    curCallLog.close();
+	            	}else{ //Call Delete
+	            		getBaseContext().getContentResolver().delete(CallLog.Calls.CONTENT_URI, " number = '"+phoneNumber+"'",null);
+	            	}
+	            }
+
+	    	}catch(Exception e){
+	    		Log.e(this.toString() + " msBookControl", e.toString());
+	    	}
 	    }
 	    
 	    
@@ -359,59 +350,68 @@ public class DetailUserActivity extends Activity implements SensorListener{
 	    
 	    public void msBookControl(String phoneNumber, boolean type){
 
+	    	try{
 	            Uri allMessage = Uri.parse("content://sms/");  
 	            Cursor cur = this.getContentResolver().query(allMessage, null, " address = '"+phoneNumber+"'" , null, null);
-	            int count = cur.getCount();
-	            //Log.i( "AAAAAA" , "SMS count = " + count);
+
+
 	            String row = "";
 	            String msg = "";
 	            String date = "";
 	            String protocol = "";
-	            while (cur.moveToNext()) {
-	            	
-	            	
-	            if(type){ // 문자 조회이면
-	                row = cur.getString(cur.getColumnIndex("address"));
-	                msg = cur.getString(cur.getColumnIndex("body"));
-	                date = cur.getString(cur.getColumnIndex("date"));
-	                protocol = cur.getString(cur.getColumnIndex("protocol"));
-	                // Logger.d( TAG , "SMS PROTOCOL = " + protocol);  
-	                
-	                String type2 = "";
-	                if (protocol == MESSAGE_TYPE_SENT) type2 = "sent";
-	                else if (protocol == MESSAGE_TYPE_INBOX) type2 = "receive";
-	                else if (protocol == MESSAGE_TYPE_CONVERSATIONS) type2 = "conversations"; 
-	                else if (protocol == null) type2 = "send"; 
-	
-	                Log.i( "AAAAAA" , "SMS Phone: " + row + " / Mesg: " + msg + " / Type: " + type + " / Date: " + timeToString(Long.valueOf(date)));
-	                
-	                // Insert the item to the array referenced to the history-list
-                    MyHistoryItem historyItem = new MyHistoryItem();
-                    historyItem.nCallType = 3;	// 문자이미지.
-                    historyItem.strHistory = msg;
-                    m_arryHistoryItems.add(historyItem);
-	                
-	            }else{  // 삭제이면 
-	            	getBaseContext().getContentResolver().delete(allMessage,  " address = '"+phoneNumber+"'",  null );
-	            }
+	            
+	            if(type){ // SMS Search
+		            while (cur.moveToNext()) {
+		                row = cur.getString(cur.getColumnIndex("address"));
+		                msg = cur.getString(cur.getColumnIndex("body"));
+		                date = cur.getString(cur.getColumnIndex("date"));
+		                protocol = cur.getString(cur.getColumnIndex("protocol"));
+		                // Logger.d( TAG , "SMS PROTOCOL = " + protocol);  
+		                
+		                String type2 = "";
+		                if (protocol == MESSAGE_TYPE_SENT) type2 = "sent";
+		                else if (protocol == MESSAGE_TYPE_INBOX) type2 = "receive";
+		                else if (protocol == MESSAGE_TYPE_CONVERSATIONS) type2 = "conversations"; 
+		                else if (protocol == null) type2 = "send"; 
+		
+	                    MyHistoryItem historyItem = new MyHistoryItem();
+	                    historyItem.nCallType = 3;	// 문자이미지.
+	                    historyItem.strHistory = msg;
+	                    m_arryHistoryItems.add(historyItem);
+		            }
+		            cur.close();
+	            }else{  // SMS Delete
+            	    getBaseContext().getContentResolver().delete(allMessage,  " address = '"+phoneNumber+"'",  null );
             }
-	        cur.close();
+	    		
+	    	}catch(Exception e){
+	    		Log.e(this.toString() + " msBookControl", e.toString());
+	    	}
+	    	
+
 	    }
 	    
 	    
 	    public boolean isGalaxyS(){
 	    	
-            Uri allMessage = Uri.parse("content://com.sec.mms.provider/message");  
-            Cursor cur = this.getContentResolver().query(allMessage, null, null , null, null);
+            Uri allMessage = null;
+            Cursor cur     = null;
             
-            if(cur == null){
+            try{
+            	 allMessage = Uri.parse("content://com.sec.mms.provider/message");  
+            	 cur  = this.getContentResolver().query(allMessage, null, null , null, null);
             	
+            }catch(Exception e){
+            	Log.e("isGalaxyS", e.toString());
             	return false;
             }
-            
-            cur.close();
 
-	    	return true;
+            if(cur == null){
+            	return false;
+            }else{
+                cur.close();
+                return true;
+            }
 	    }
 	    
 	    
@@ -419,54 +419,34 @@ public class DetailUserActivity extends Activity implements SensorListener{
 	    
 	    public void msBookControlGalaxyS(String phoneNumber, boolean type){
 	    	
-	    	//phoneNumber = parserPhoneNumber(phoneNumber);
-
             Uri allMessage = Uri.parse("content://com.sec.mms.provider/message");  
             Cursor cur = this.getContentResolver().query(allMessage, null, " MDN1st = '"+phoneNumber+"' OR MDN2nd ='"+phoneNumber+"'" , null, null);
             int count = cur.getCount();
-            //Log.i( "AAAAAA" , "SMS count = " + count);
             Long  ldate;
             String row = "";
             String msg = "";
             String date = "";
             String protocol = "";
-            while (cur.moveToNext()) {
-            	
-            	
-            if(type){ // 문자 조회이면
-//                row = cur.getString(cur.getColumnIndex("address"));
-//                msg = cur.getString(cur.getColumnIndex("body"));
-//                date = cur.getString(cur.getColumnIndex("date"));
-//                protocol = cur.getString(cur.getColumnIndex("protocol"));
-                // Logger.d( TAG , "SMS PROTOCOL = " + protocol);  
-            	
-            	ldate = cur.getLong(1);
-
-                
-//                String type2 = "";
-//                if (protocol == MESSAGE_TYPE_SENT) type2 = "sent";
-//                else if (protocol == MESSAGE_TYPE_INBOX) type2 = "receive";
-//                else if (protocol == MESSAGE_TYPE_CONVERSATIONS) type2 = "conversations"; 
-//                else if (protocol == null) type2 = "send"; 
-
-//               Log.i( "AAAAAA" , "SMS Phone: " + row + " / Mesg: " + msg + " / Type: " + type + " / Date: " + timeToString(Long.valueOf(date)));
-                
-                // Insert the item to the array referenced to the history-list
-                
-            	Log.i("AAAAAAA", timeToString(Long.valueOf(ldate)));
-                
-                
-                  MyHistoryItem historyItem = new MyHistoryItem();
-                  historyItem.nCallType = 3;	// 문자이미지.
-                  historyItem.strHistory =timeToString(Long.valueOf(ldate));
-                  m_arryHistoryItems.add(historyItem);
-                
-            }else{  // 삭제이면 
-            	getBaseContext().getContentResolver().delete(allMessage,   " MDN1st = '"+phoneNumber+"' OR MDN2nd ='"+phoneNumber+"'",  null );
-            }
-        }
             
-            cur.close();
+            
+            if(type){ // SMS SEARCH
+                while (cur.moveToNext()) {
+                	ldate = cur.getLong(1);
+
+                    MyHistoryItem historyItem = new MyHistoryItem();
+                    historyItem.nCallType = 3;	// 문자이미지.
+                    historyItem.strHistory =timeToString(Long.valueOf(ldate));
+                    m_arryHistoryItems.add(historyItem);
+                }              
+                cur.close();
+            }
+            else{  // SMS DELETE
+            	try{
+            		getBaseContext().getContentResolver().delete(allMessage,  " MDN1st = '"+phoneNumber+"' OR MDN2nd ='"+phoneNumber+"'",  null );
+            	}catch(Exception e){
+            		Log.e(this.toString() + "msBookControlGalaxyS", e.toString());
+            	}
+            }    
 
 	}
 	    

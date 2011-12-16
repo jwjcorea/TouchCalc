@@ -94,7 +94,7 @@ public class SecretManager extends Activity implements SensorListener {
 			return true;
 
 		case 3:
-			Log.i("jdebug", "setting");
+			//Log.i("jdebug", "setting");
 			i.setClass(this, SettingActivity.class);
 			startActivity(i);
 			return true;

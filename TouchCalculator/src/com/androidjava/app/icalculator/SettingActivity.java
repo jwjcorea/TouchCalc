@@ -100,7 +100,7 @@ public class SettingActivity extends Activity implements SensorListener{
             	fos.write(strProgress.getBytes());
             	fos.close();
             	
-            	Log.i("jdebug", "setting.dat has been written");
+            	//Log.i("jdebug", "setting.dat has been written");
             	
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block

@@ -29,13 +29,11 @@ public class PhoneListActivity extends Activity {
 
 	    public void phoneBook() {
 	        try {
-	            Cursor cursor = getURI();                    // 전화번호부 가져오기    
+	            Cursor cursor = getURI();                     // 전화번호부 가져오기    
+	            int end = cursor.getCount();                  // 전화번호부의 갯수 세기
 
-	            int end = cursor.getCount();                // 전화번호부의 갯수 세기
-	            //Log.i("ANDROES", "end = "+end);
-
-	            String [] name = new String[end];    // 전화번호부의 이름을 저장할 배열 선언
-	            String [] phone = new String[end];    // 전화번호부의 이름을 저장할 배열 선언
+	            String [] name = new String[end];             // 전화번호부의 이름을 저장할 배열 선언
+	            String [] phone = new String[end];            // 전화번호부의 이름을 저장할 배열 선언
 	            int count = 0;    
 
 	            if(cursor.moveToFirst()) 
@@ -59,27 +57,18 @@ public class PhoneListActivity extends Activity {
 	                            phone[count] = phones
 	                                    .getString(phones
 	                                            .getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-	                        }        
+	                        }
+	                        phones.close();
 	                    }
 	                    name[count] = cursor.getString(1);
 	                    
-	                    //Log.i("===========================>",name[count]);
-
-	                    // 개별 연락처 삭제                    
-	                    // rowNum = getBaseContext().getContentResolver().delete(RawContacts.CONTENT_URI, RawContacts._ID+ " =" + id,null);
-
-	                    // LogCat에 로그 남기기
-	                    // Logger.i("ANDROES", "id=" + id +", name["+count+"]=" + name[count]+", phone["+count+"]=" + phone[count]);
 	                    count++;
 	                    
 	                } while(cursor.moveToNext() || count > end);
-	            
-	            
-	            
-	                cursor.close();
+
 	            }
 	        } catch (Exception e) {
-	            e.printStackTrace();
+	        	Log.e("phoneBook", e.toString());
 	        }
 	        
 
